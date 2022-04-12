@@ -35,10 +35,8 @@ class FragmentMain : Fragment(R.layout.fragment_main) {
     }
 
     private fun openDeviceMs(ip: String) {
-        findNavController().navigate(
-            R.id.action_fragmentMain_to_fragmentMsControl,
-            bundleOf(FragmentMsControl.ARG_IP to ip)
-        )
+        val direction = FragmentMainDirections.actionFragmentMainToFragmentMsControl(ip)
+        findNavController().navigate(direction)
     }
 
     override fun onDestroy() {
