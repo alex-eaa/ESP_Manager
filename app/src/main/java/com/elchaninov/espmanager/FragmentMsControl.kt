@@ -13,9 +13,16 @@ class FragmentMsControl : Fragment(R.layout.fragment_ms_control) {
     private var _binding: FragmentMsControlBinding? = null
     private val binding get() = _binding!!
 
+    private var ip: String? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMsControlBinding.bind(view)
+
+        arguments?.let {
+            ip = it.getString(ARG_IP)
+            binding.ipAddress.text = ip
+        }
 
         binding.imageLight.setImageResource(R.drawable.light_on)
         ImageViewCompat.setImageTintList(
@@ -30,6 +37,6 @@ class FragmentMsControl : Fragment(R.layout.fragment_ms_control) {
     }
 
     companion object {
-        fun newInstance() = FragmentMsControl()
+        const val ARG_IP = "ipAddress"
     }
 }

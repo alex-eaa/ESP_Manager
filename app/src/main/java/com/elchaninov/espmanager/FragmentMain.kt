@@ -3,7 +3,9 @@ package com.elchaninov.espmanager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.elchaninov.espmanager.databinding.FragmentMainBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -28,11 +30,15 @@ class FragmentMain : Fragment(R.layout.fragment_main) {
         }
 
         binding.button.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .addToBackStack(null)
-                .replace(R.id.fragment_container, FragmentMsControl.newInstance())
-                .commit()
+            openDeviceMs("192.168.1.43")
         }
+    }
+
+    private fun openDeviceMs(ip: String) {
+        findNavController().navigate(
+            R.id.action_fragmentMain_to_fragmentMsControl,
+            bundleOf(FragmentMsControl.ARG_IP to ip)
+        )
     }
 
     override fun onDestroy() {
