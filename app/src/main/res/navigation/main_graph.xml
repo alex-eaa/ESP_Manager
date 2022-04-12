@@ -17,7 +17,7 @@
     <fragment
         android:id="@+id/fragmentMsControl"
         android:name="com.elchaninov.espmanager.FragmentMsControl"
-        android:label="Контроллер освещения {ipAddress}"
+        android:label="Контроллер освещения"
         tools:layout="@layout/fragment_ms_control">
         <action
             android:id="@+id/action_fragmentMsControl_to_fragmentMsWifiSetup"
@@ -36,15 +36,27 @@
         android:id="@+id/fragmentMsWifiSetup"
         android:name="com.elchaninov.espmanager.FragmentMsWifiSetup"
         android:label="Настройка сети"
-        tools:layout="@layout/fragment_ms_wifi_setup" />
+        tools:layout="@layout/fragment_ms_wifi_setup">
+        <argument
+            android:name="ipAddress"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/fragmentMsStats"
         android:name="com.elchaninov.espmanager.FragmentMsStats"
         android:label="Статистика работы"
-        tools:layout="@layout/fragment_ms_stats" />
+        tools:layout="@layout/fragment_ms_stats">
+        <argument
+            android:name="ipAddress"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/fragmentMsMqttSetup"
         android:name="com.elchaninov.espmanager.FragmentMsMqttSetup"
         android:label="Настройка удаленного управления"
-        tools:layout="@layout/fragment_ms_mqtt_setup" />
+        tools:layout="@layout/fragment_ms_mqtt_setup">
+        <argument
+            android:name="ipAddress"
+            app:argType="string" />
+    </fragment>
 </navigation>

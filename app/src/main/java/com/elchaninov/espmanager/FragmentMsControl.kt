@@ -6,6 +6,7 @@ import android.view.View
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import com.elchaninov.espmanager.databinding.FragmentMsControlBinding
 
 class FragmentMsControl : Fragment(R.layout.fragment_ms_control) {
@@ -13,13 +14,15 @@ class FragmentMsControl : Fragment(R.layout.fragment_ms_control) {
     private var _binding: FragmentMsControlBinding? = null
     private val binding get() = _binding!!
 
+    private val args: FragmentMsControlArgs by navArgs()
+
     private var ip: String? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMsControlBinding.bind(view)
 
-        ip = FragmentMsControlArgs.fromBundle(requireArguments()).ipAddress
+        ip = args.ipAddress
         binding.ipAddress.text = ip
 
         binding.imageLight.setImageResource(R.drawable.light_on)
