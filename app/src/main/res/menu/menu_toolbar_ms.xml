@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_stats"
+        android:icon="@drawable/ic_baseline_query_stats_24"
+        android:orderInCategory="1"
+        android:title="Статистика работы"
+        app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/action_wifi_settings"
+        android:icon="@drawable/ic_baseline_wifi_24"
+        android:orderInCategory="2"
+        android:title="Настройка сети"
+        app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/action_mqtt_settings"
+        android:icon="@drawable/ic_baseline_cloud_24"
+        android:orderInCategory="3"
+        android:title="Настройка облачного управления"
+        app:showAsAction="collapseActionView" />
+</menu>
