@@ -36,7 +36,16 @@ class FragmentMain : Fragment(R.layout.fragment_main) {
 
     private fun openDeviceMs(ip: String) {
         val direction = FragmentMainDirections.actionFragmentMainToMsGraph(ip)
-        findNavController().navigate(direction)
+        findNavController().navigate(direction,
+            navOptions {
+                anim {
+                    enter = androidx.fragment.R.animator.fragment_open_enter
+                    exit = androidx.fragment.R.animator.fragment_open_exit
+                    popEnter = androidx.fragment.R.animator.fragment_open_enter
+                    popExit = androidx.fragment.R.animator.fragment_open_exit
+                }
+            }
+        )
     }
 
     override fun onDestroy() {
