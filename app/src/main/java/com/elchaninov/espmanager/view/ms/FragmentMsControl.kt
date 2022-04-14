@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
 import androidx.core.widget.ImageViewCompat
@@ -33,11 +34,9 @@ class FragmentMsControl : Fragment(R.layout.fragment_ms_control) {
         deviceModel = args.device
         binding.ipAddress.text = deviceModel.ip
 
-        binding.imageLight.setImageResource(R.drawable.light_on)
-        ImageViewCompat.setImageTintList(
-            binding.imagePir1,
-            ColorStateList.valueOf(getColor(requireContext(), R.color.purple_700))
-        )
+        lightState(LightState.ON)
+        pirState(binding.imagePir1, PirState.ON)
+        pirState(binding.imagePir2, PirState.OFF)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -76,6 +75,23 @@ class FragmentMsControl : Fragment(R.layout.fragment_ms_control) {
                     popExit = androidx.fragment.R.animator.fragment_open_exit
                 }
             }
+        )
+    }
+
+    private fun lightState(lightState: LightState) {
+        binding.imageLight.apply {
+            setImageResource(lightState.drawable)
+            ImageViewCompat.setImageTintList(
+                this,
+                ColorStateList.valueOf(getColor(requireContext(), lightState.color))
+            )
+        }
+    }
+
+    private fun pirState(pirImageView: ImageView, pirState: PirState) {
+        ImageViewCompat.setImageTintList(
+            pirImageView,
+            ColorStateList.valueOf(getColor(requireContext(), pirState.color))
         )
     }
 

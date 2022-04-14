@@ -9,4 +9,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#A4A4A4</color>
     <color name="my_color">#1486ba</color>
+    <color name="lightOn">#FFEB3B</color>
+    <color name="lightOff">#A4A4A4</color>
+    <color name="pirOn">#EA1202</color>
+    <color name="pirOff">#1486ba</color>
+    <color name="pirDisable">#A4A4A4</color>
 </resources>
