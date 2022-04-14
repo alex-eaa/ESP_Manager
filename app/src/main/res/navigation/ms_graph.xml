@@ -28,27 +28,16 @@
         android:name="com.elchaninov.espmanager.FragmentMsMqttSetup"
         android:label="Настройка удаленного управления"
         tools:layout="@layout/fragment_ms_mqtt_setup">
-        <argument
-            android:name="ipAddress"
-            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/fragmentMsStats"
         android:name="com.elchaninov.espmanager.FragmentMsStats"
         android:label="Статистика работы"
-        tools:layout="@layout/fragment_ms_stats">
-        <argument
-            android:name="ipAddress"
-            app:argType="string" />
-    </fragment>
+        tools:layout="@layout/fragment_ms_stats"/>
     <fragment
         android:id="@+id/fragmentMsWifiSetup"
         android:name="com.elchaninov.espmanager.FragmentMsWifiSetup"
         android:label="Настройка сети"
-        tools:layout="@layout/fragment_ms_wifi_setup">
-        <argument
-            android:name="ipAddress"
-            app:argType="string" />
-    </fragment>
+        tools:layout="@layout/fragment_ms_wifi_setup"/>
 
 </navigation>

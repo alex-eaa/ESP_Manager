@@ -7,9 +7,12 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.core.content.ContextCompat.getColor
+import androidx.core.os.bundleOf
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.navigation.navOptions
 import com.elchaninov.espmanager.databinding.FragmentMsControlBinding
 
 class FragmentMsControl : Fragment(R.layout.fragment_ms_control) {
@@ -41,26 +44,17 @@ class FragmentMsControl : Fragment(R.layout.fragment_ms_control) {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId ){
-                R.id.action_stats -> {
-                    device?.ip?.let {
-                        val direction = FragmentMsControlDirections.actionFragmentMsControlToFragmentMsStats(it)
-                        findNavController().navigate(direction)
-                    }
-                    return true
-                }
+        when (item.itemId) {
+            R.id.action_stats -> {
+                openFragment(R.id.action_fragmentMsControl_to_fragmentMsStats)
+                return true
+            }
             R.id.action_wifi_settings -> {
-                device?.ip?.let {
-                    val direction = FragmentMsControlDirections.actionFragmentMsControlToFragmentMsWifiSetup(it)
-                    findNavController().navigate(direction)
-                }
+                openFragment(R.id.action_fragmentMsControl_to_fragmentMsWifiSetup)
                 return true
             }
             R.id.action_mqtt_settings -> {
-                device?.ip?.let {
-                    val direction = FragmentMsControlDirections.actionFragmentMsControlToFragmentMsMqttSetup(it)
-                    findNavController().navigate(direction)
-                }
+                openFragment(R.id.action_fragmentMsControl_to_fragmentMsMqttSetup)
                 return true
             }
         }
@@ -68,12 +62,27 @@ class FragmentMsControl : Fragment(R.layout.fragment_ms_control) {
         return super.onOptionsItemSelected(item)
     }
 
+    private fun openFragment(action: Int) {
+        findNavController().navigate(
+            action,
+            bundleOf(ARG_DEVICE to device),
+            navOptions {
+                anim {
+                    enter = androidx.fragment.R.animator.fragment_open_enter
+                    exit = androidx.fragment.R.animator.fragment_open_exit
+                    popEnter = androidx.fragment.R.animator.fragment_open_enter
+                    popExit = androidx.fragment.R.animator.fragment_open_exit
+                }
+            }
+        )
+    }
+
     override fun onDestroy() {
         _binding = null
         super.onDestroy()
     }
 
-    companion object{
+    companion object {
         const val ARG_DEVICE = "argDevice"
     }
 }

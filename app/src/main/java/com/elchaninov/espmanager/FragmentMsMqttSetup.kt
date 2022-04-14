@@ -7,7 +7,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.navArgs
 import com.elchaninov.espmanager.databinding.FragmentMsMqttSetupBinding
 
 class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
@@ -15,16 +14,14 @@ class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
     private var _binding: FragmentMsMqttSetupBinding? = null
     private val binding get() = _binding!!
 
-    private val args: FragmentMsMqttSetupArgs by navArgs()
-
-    private var ip: String? = null
+    private var device: Device? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMsMqttSetupBinding.bind(view)
         setHasOptionsMenu(true)
 
-        ip = args.ipAddress
+        device = requireArguments().getParcelable(FragmentMsControl.ARG_DEVICE)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

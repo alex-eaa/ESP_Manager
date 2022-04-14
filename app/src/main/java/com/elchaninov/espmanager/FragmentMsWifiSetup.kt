@@ -7,7 +7,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.navArgs
 import com.elchaninov.espmanager.databinding.FragmentMsWifiSetupBinding
 
 class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
@@ -15,16 +14,14 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
     private var _binding: FragmentMsWifiSetupBinding? = null
     private val binding get() = _binding!!
 
-    private val args: FragmentMsWifiSetupArgs by navArgs()
-
-    private var ip: String? = null
+    private var device: Device? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMsWifiSetupBinding.bind(view)
         setHasOptionsMenu(true)
 
-        ip = args.ipAddress
+        device = requireArguments().getParcelable(FragmentMsControl.ARG_DEVICE)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
