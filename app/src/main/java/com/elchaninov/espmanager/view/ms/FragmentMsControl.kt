@@ -1,4 +1,4 @@
-package com.elchaninov.espmanager
+package com.elchaninov.espmanager.view.ms
 
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -13,7 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navOptions
+import com.elchaninov.espmanager.R
 import com.elchaninov.espmanager.databinding.FragmentMsControlBinding
+import com.elchaninov.espmanager.model.Device
 
 class FragmentMsControl : Fragment(R.layout.fragment_ms_control) {
 

@@ -1,4 +1,4 @@
-package com.elchaninov.espmanager
+package com.elchaninov.espmanager.view.ms
 
 import android.os.Bundle
 import android.view.Menu
@@ -7,18 +7,20 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.elchaninov.espmanager.databinding.FragmentMsWifiSetupBinding
+import com.elchaninov.espmanager.R
+import com.elchaninov.espmanager.databinding.FragmentMsMqttSetupBinding
+import com.elchaninov.espmanager.model.Device
 
-class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
+class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
 
-    private var _binding: FragmentMsWifiSetupBinding? = null
+    private var _binding: FragmentMsMqttSetupBinding? = null
     private val binding get() = _binding!!
 
     private var device: Device? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentMsWifiSetupBinding.bind(view)
+        _binding = FragmentMsMqttSetupBinding.bind(view)
         setHasOptionsMenu(true)
 
         device = requireArguments().getParcelable(FragmentMsControl.ARG_DEVICE)

@@ -1,4 +1,4 @@
-package com.elchaninov.espmanager
+package com.elchaninov.espmanager.view
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.elchaninov.espmanager.R
 import com.elchaninov.espmanager.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

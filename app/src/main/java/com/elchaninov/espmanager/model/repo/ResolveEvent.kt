@@ -1,4 +1,4 @@
-package com.elchaninov.espmanager
+package com.elchaninov.espmanager.model.repo
 
 import android.net.nsd.NsdServiceInfo
 

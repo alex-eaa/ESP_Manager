@@ -1,9 +1,11 @@
-package com.elchaninov.espmanager
+package com.elchaninov.espmanager.view.ms
 
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.elchaninov.espmanager.R
 import com.elchaninov.espmanager.databinding.FragmentMsStatsBinding
+import com.elchaninov.espmanager.model.Device
 
 class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
 

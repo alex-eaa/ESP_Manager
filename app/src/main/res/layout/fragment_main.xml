@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="8dp"
-    tools:context=".FragmentMain">
+    tools:context=".view.main.FragmentMain">
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button"

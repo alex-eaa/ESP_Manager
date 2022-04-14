@@ -1,4 +1,4 @@
-package com.elchaninov.espmanager
+package com.elchaninov.espmanager.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

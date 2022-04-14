@@ -1,14 +1,14 @@
-package com.elchaninov.espmanager
+package com.elchaninov.espmanager.view.main
 
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
-import com.elchaninov.espmanager.FragmentMsControl.Companion.ARG_DEVICE
+import com.elchaninov.espmanager.R
 import com.elchaninov.espmanager.databinding.FragmentMainBinding
+import com.elchaninov.espmanager.model.Device
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 

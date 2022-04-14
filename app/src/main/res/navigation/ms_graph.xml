@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/fragmentMsControl"
-        android:name="com.elchaninov.espmanager.FragmentMsControl"
+        android:name="com.elchaninov.espmanager.view.ms.FragmentMsControl"
         android:label="Контроллер освещения"
         tools:layout="@layout/fragment_ms_control">
         <argument
             android:name="device"
-            app:argType="com.elchaninov.espmanager.Device" />
+            app:argType="com.elchaninov.espmanager.model.Device" />
         <action
             android:id="@+id/action_fragmentMsControl_to_fragmentMsStats"
             app:destination="@id/fragmentMsStats" />
@@ -25,18 +25,18 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentMsMqttSetup"
-        android:name="com.elchaninov.espmanager.FragmentMsMqttSetup"
+        android:name="com.elchaninov.espmanager.view.ms.FragmentMsMqttSetup"
         android:label="Настройка удаленного управления"
         tools:layout="@layout/fragment_ms_mqtt_setup">
     </fragment>
     <fragment
         android:id="@+id/fragmentMsStats"
-        android:name="com.elchaninov.espmanager.FragmentMsStats"
+        android:name="com.elchaninov.espmanager.view.ms.FragmentMsStats"
         android:label="Статистика работы"
         tools:layout="@layout/fragment_ms_stats"/>
     <fragment
         android:id="@+id/fragmentMsWifiSetup"
-        android:name="com.elchaninov.espmanager.FragmentMsWifiSetup"
+        android:name="com.elchaninov.espmanager.view.ms.FragmentMsWifiSetup"
         android:label="Настройка сети"
         tools:layout="@layout/fragment_ms_wifi_setup"/>
 

@@ -1,10 +1,12 @@
-package com.elchaninov.espmanager
+package com.elchaninov.espmanager.view.main
 
 import android.net.nsd.NsdServiceInfo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.elchaninov.espmanager.model.repo.DiscoveryEvent
+import com.elchaninov.espmanager.model.repo.NsdRepositoryImpl
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter

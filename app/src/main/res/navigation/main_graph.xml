@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/fragmentMain"
-        android:name="com.elchaninov.espmanager.FragmentMain"
+        android:name="com.elchaninov.espmanager.view.main.FragmentMain"
         android:label="Главная"
         tools:layout="@layout/fragment_main">
         <action
@@ -15,7 +15,7 @@
             app:destination="@id/ms_graph">
             <argument
                 android:name="device"
-                app:argType="com.elchaninov.espmanager.Device" />
+                app:argType="com.elchaninov.espmanager.model.Device" />
         </action>
     </fragment>
     <include app:graph="@navigation/ms_graph" />

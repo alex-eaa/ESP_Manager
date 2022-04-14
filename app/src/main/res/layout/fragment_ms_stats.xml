@@ -8,7 +8,7 @@
     android:layout_margin="8dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="8dp"
-    tools:context=".FragmentMsStats">
+    tools:context=".view.ms.FragmentMsStats">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
