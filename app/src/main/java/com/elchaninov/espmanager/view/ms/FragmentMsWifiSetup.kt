@@ -9,21 +9,21 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.elchaninov.espmanager.R
 import com.elchaninov.espmanager.databinding.FragmentMsWifiSetupBinding
-import com.elchaninov.espmanager.model.Device
+import com.elchaninov.espmanager.model.DeviceModel
 
 class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
 
     private var _binding: FragmentMsWifiSetupBinding? = null
     private val binding get() = _binding!!
 
-    private var device: Device? = null
+    private var deviceModel: DeviceModel? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMsWifiSetupBinding.bind(view)
         setHasOptionsMenu(true)
 
-        device = requireArguments().getParcelable(FragmentMsControl.ARG_DEVICE)
+        deviceModel = requireArguments().getParcelable(FragmentMsControl.ARG_DEVICE)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

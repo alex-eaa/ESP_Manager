@@ -15,14 +15,14 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.navOptions
 import com.elchaninov.espmanager.R
 import com.elchaninov.espmanager.databinding.FragmentMsControlBinding
-import com.elchaninov.espmanager.model.Device
+import com.elchaninov.espmanager.model.DeviceModel
 
 class FragmentMsControl : Fragment(R.layout.fragment_ms_control) {
 
     private var _binding: FragmentMsControlBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var device: Device
+    private lateinit var deviceModel: DeviceModel
     private val args: FragmentMsControlArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -30,8 +30,8 @@ class FragmentMsControl : Fragment(R.layout.fragment_ms_control) {
         _binding = FragmentMsControlBinding.bind(view)
         setHasOptionsMenu(true)
 
-        device = args.device
-        binding.ipAddress.text = device.ip
+        deviceModel = args.device
+        binding.ipAddress.text = deviceModel.ip
 
         binding.imageLight.setImageResource(R.drawable.light_on)
         ImageViewCompat.setImageTintList(
@@ -67,7 +67,7 @@ class FragmentMsControl : Fragment(R.layout.fragment_ms_control) {
     private fun openFragment(action: Int) {
         findNavController().navigate(
             action,
-            bundleOf(ARG_DEVICE to device),
+            bundleOf(ARG_DEVICE to deviceModel),
             navOptions {
                 anim {
                     enter = androidx.fragment.R.animator.fragment_open_enter

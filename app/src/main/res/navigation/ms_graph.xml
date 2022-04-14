@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_ms_control">
         <argument
             android:name="device"
-            app:argType="com.elchaninov.espmanager.model.Device" />
+            app:argType="com.elchaninov.espmanager.model.DeviceModel" />
         <action
             android:id="@+id/action_fragmentMsControl_to_fragmentMsStats"
             app:destination="@id/fragmentMsStats" />

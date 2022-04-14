@@ -15,7 +15,7 @@
             app:destination="@id/ms_graph">
             <argument
                 android:name="device"
-                app:argType="com.elchaninov.espmanager.model.Device" />
+                app:argType="com.elchaninov.espmanager.model.DeviceModel" />
         </action>
     </fragment>
     <include app:graph="@navigation/ms_graph" />

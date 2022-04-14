@@ -1,12 +1,13 @@
 package com.elchaninov.espmanager.view.main
 
-import android.net.nsd.NsdServiceInfo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.elchaninov.espmanager.model.DeviceModel
 import com.elchaninov.espmanager.model.repo.DiscoveryEvent
 import com.elchaninov.espmanager.model.repo.NsdRepositoryImpl
+import com.elchaninov.espmanager.model.toDeviceModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
@@ -16,13 +17,13 @@ import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 class ViewModelFragmentMain(private val nsdRepository: NsdRepositoryImpl) : ViewModel() {
-    private var setNsdServiceInfo: MutableSet<NsdServiceInfo> = mutableSetOf()
+    private var setDeviceModels: MutableSet<DeviceModel> = mutableSetOf()
 
-    private var _liveData: MutableLiveData<Set<NsdServiceInfo>> = MutableLiveData()
-    val liveData: LiveData<Set<NsdServiceInfo>> get() = _liveData
+    private var _liveData: MutableLiveData<Set<DeviceModel>> = MutableLiveData()
+    val liveData: LiveData<Set<DeviceModel>> get() = _liveData
 
     init {
-        setNsdServiceInfo.clear()
+        setDeviceModels.clear()
         viewModelScope.launch {
             nsdRepository.discoveryListenerFlow()
                 .filter {
@@ -35,13 +36,13 @@ class ViewModelFragmentMain(private val nsdRepository: NsdRepositoryImpl) : View
                     when (discoveryEvent) {
                         is DiscoveryEvent.Found -> {
                             nsdRepository.resolveService(discoveryEvent.service)?.let { resolvedService ->
-                                setNsdServiceInfo.add(resolvedService)
-                                _liveData.postValue(setNsdServiceInfo)
+                                setDeviceModels.add(resolvedService.toDeviceModel())
+                                _liveData.postValue(setDeviceModels)
                             }
                         }
                         is DiscoveryEvent.Lost -> {
-                            setNsdServiceInfo.removeAll { x -> x.serviceName == discoveryEvent.service.serviceName }
-                            _liveData.postValue(setNsdServiceInfo)
+                            setDeviceModels.removeAll { x -> x.name == discoveryEvent.service.serviceName }
+                            _liveData.postValue(setDeviceModels)
                         }
                     }
                 }
