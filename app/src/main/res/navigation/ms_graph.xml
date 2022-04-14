@@ -11,8 +11,8 @@
         android:label="Контроллер освещения"
         tools:layout="@layout/fragment_ms_control">
         <argument
-            android:name="ipAddress"
-            app:argType="string" />
+            android:name="device"
+            app:argType="com.elchaninov.espmanager.Device" />
         <action
             android:id="@+id/action_fragmentMsControl_to_fragmentMsStats"
             app:destination="@id/fragmentMsStats" />

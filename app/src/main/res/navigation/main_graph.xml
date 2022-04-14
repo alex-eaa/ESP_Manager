@@ -14,8 +14,8 @@
             android:id="@+id/action_fragmentMain_to_ms_graph"
             app:destination="@id/ms_graph">
             <argument
-                android:name="ipAddress"
-                app:argType="string" />
+                android:name="device"
+                app:argType="com.elchaninov.espmanager.Device" />
         </action>
     </fragment>
     <include app:graph="@navigation/ms_graph" />

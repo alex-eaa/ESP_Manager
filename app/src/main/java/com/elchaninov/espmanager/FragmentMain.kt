@@ -3,9 +3,11 @@ package com.elchaninov.espmanager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
+import com.elchaninov.espmanager.FragmentMsControl.Companion.ARG_DEVICE
 import com.elchaninov.espmanager.databinding.FragmentMainBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -17,6 +19,8 @@ class FragmentMain : Fragment(R.layout.fragment_main) {
     private val binding get() = _binding!!
 
     private val viewModel: ViewModelFragmentMain by sharedViewModel()
+
+    private val device = Device(id = "Esp_00001111", ip="192.168.1.43")
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -30,12 +34,12 @@ class FragmentMain : Fragment(R.layout.fragment_main) {
         }
 
         binding.button.setOnClickListener {
-            openDeviceMs("192.168.1.43")
+            openDeviceMs(device)
         }
     }
 
-    private fun openDeviceMs(ip: String) {
-        val direction = FragmentMainDirections.actionFragmentMainToMsGraph(ip)
+    private fun openDeviceMs(device: Device) {
+        val direction = FragmentMainDirections.actionFragmentMainToMsGraph(device)
         findNavController().navigate(direction,
             navOptions {
                 anim {
