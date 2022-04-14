@@ -3,9 +3,9 @@ package com.elchaninov.espmanager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import com.elchaninov.espmanager.databinding.FragmentMainBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -35,7 +35,7 @@ class FragmentMain : Fragment(R.layout.fragment_main) {
     }
 
     private fun openDeviceMs(ip: String) {
-        val direction = FragmentMainDirections.actionFragmentMainToFragmentMsControl(ip)
+        val direction = FragmentMainDirections.actionFragmentMainToMsGraph(ip)
         findNavController().navigate(direction)
     }
 

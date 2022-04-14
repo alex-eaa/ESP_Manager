@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ms_graph"
+    app:startDestination="@id/fragmentMsControl">
+
+    <fragment
+        android:id="@+id/fragmentMsControl"
+        android:name="com.elchaninov.espmanager.FragmentMsControl"
+        android:label="Контроллер освещения"
+        tools:layout="@layout/fragment_ms_control">
+        <argument
+            android:name="ipAddress"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_fragmentMsControl_to_fragmentMsStats"
+            app:destination="@id/fragmentMsStats" />
+        <action
+            android:id="@+id/action_fragmentMsControl_to_fragmentMsMqttSetup"
+            app:destination="@id/fragmentMsMqttSetup" />
+        <action
+            android:id="@+id/action_fragmentMsControl_to_fragmentMsWifiSetup"
+            app:destination="@id/fragmentMsWifiSetup" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentMsMqttSetup"
+        android:name="com.elchaninov.espmanager.FragmentMsMqttSetup"
+        android:label="Настройка удаленного управления"
+        tools:layout="@layout/fragment_ms_mqtt_setup">
+        <argument
+            android:name="ipAddress"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentMsStats"
+        android:name="com.elchaninov.espmanager.FragmentMsStats"
+        android:label="Статистика работы"
+        tools:layout="@layout/fragment_ms_stats">
+        <argument
+            android:name="ipAddress"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentMsWifiSetup"
+        android:name="com.elchaninov.espmanager.FragmentMsWifiSetup"
+        android:label="Настройка сети"
+        tools:layout="@layout/fragment_ms_wifi_setup">
+        <argument
+            android:name="ipAddress"
+            app:argType="string" />
+    </fragment>
+
+</navigation>
