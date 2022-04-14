@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 
 @ExperimentalCoroutinesApi
-class ViewModelFragmentMain(private val nsdHelper: NsdHelper) : ViewModel() {
+class ViewModelFragmentMain(private val nsdRepository: NsdRepositoryImpl) : ViewModel() {
     private var setNsdServiceInfo: MutableSet<NsdServiceInfo> = mutableSetOf()
 
     private var _liveData: MutableLiveData<Set<NsdServiceInfo>> = MutableLiveData()
@@ -22,7 +22,7 @@ class ViewModelFragmentMain(private val nsdHelper: NsdHelper) : ViewModel() {
     init {
         setNsdServiceInfo.clear()
         viewModelScope.launch {
-            nsdHelper.discoveryListenerFlow()
+            nsdRepository.discoveryListenerFlow()
                 .filter {
                     it is DiscoveryEvent.Found || it is DiscoveryEvent.Lost
                             && it.service.serviceName.contains(
@@ -32,7 +32,7 @@ class ViewModelFragmentMain(private val nsdHelper: NsdHelper) : ViewModel() {
                 .map { discoveryEvent ->
                     when (discoveryEvent) {
                         is DiscoveryEvent.Found -> {
-                            nsdHelper.resolve(discoveryEvent.service)?.let { resolvedService ->
+                            nsdRepository.resolveService(discoveryEvent.service)?.let { resolvedService ->
                                 setNsdServiceInfo.add(resolvedService)
                                 _liveData.postValue(setNsdServiceInfo)
                             }

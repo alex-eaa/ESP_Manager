@@ -14,13 +14,13 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 
 
 @ExperimentalCoroutinesApi
-class NsdHelper(context: Context) {
+class NsdRepositoryImpl(context: Context) : NsdRepository {
 
     private val nsdManager: NsdManager =
         context.getSystemService(Context.NSD_SERVICE) as NsdManager
 
 
-    fun discoveryListenerFlow(): Flow<DiscoveryEvent> = callbackFlow {
+    override fun discoveryListenerFlow(): Flow<DiscoveryEvent> = callbackFlow {
         val discoveryListener = object : NsdManager.DiscoveryListener {
 
             override fun onDiscoveryStarted(regType: String) {
@@ -56,7 +56,11 @@ class NsdHelper(context: Context) {
             }
         }
 
-        nsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, discoveryListener)
+        nsdManager.discoverServices(
+            NsdRepository.SERVICE_TYPE,
+            NsdManager.PROTOCOL_DNS_SD,
+            discoveryListener
+        )
 
         awaitClose {
             nsdManager.stopServiceDiscovery(discoveryListener)
@@ -64,7 +68,7 @@ class NsdHelper(context: Context) {
     }.buffer(Channel.BUFFERED)
 
 
-    suspend fun resolve(serviceInfo: NsdServiceInfo): NsdServiceInfo? =
+    override suspend fun resolveService(serviceInfo: NsdServiceInfo): NsdServiceInfo? =
         suspendCancellableCoroutine { continuation ->
             val resolveListener = object : NsdManager.ResolveListener {
                 override fun onResolveFailed(serviceInfo: NsdServiceInfo?, errorCode: Int) {
@@ -80,8 +84,4 @@ class NsdHelper(context: Context) {
 
             nsdManager.resolveService(serviceInfo, resolveListener)
         }
-
-    companion object {
-        private const val SERVICE_TYPE = "_http._tcp."
-    }
 }
