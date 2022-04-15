@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginTop="8dp"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/itemImageLogo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:contentDescription="Led контроллер"
+            android:src="@drawable/ic_baseline_pix_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/my_color" />
+
+        <TextView
+            android:id="@+id/itemDeviceAlias"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:textColor="@color/my_color"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/itemImageLogo"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Имя устройства" />
+
+        <TextView
+            android:id="@+id/itemDeviceName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:textColor="@color/my_color"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/itemImageLogo"
+            app:layout_constraintStart_toEndOf="@+id/itemImageLogo"
+            tools:text="Esp_ms_23212" />
+
+        <TextView
+            android:id="@+id/itemDeviceHost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/my_color"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/itemImageLogo"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="0.0.0.0:0" />
+
+        <ImageView
+            android:id="@+id/iconNet"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="Network"
+            android:src="@drawable/net"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/gray" />
+
+        <ImageView
+            android:id="@+id/iconWww"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginHorizontal="8dp"
+            android:contentDescription="Cloud"
+            android:src="@drawable/www"
+            app:layout_constraintEnd_toStartOf="@+id/iconNet"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/gray" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

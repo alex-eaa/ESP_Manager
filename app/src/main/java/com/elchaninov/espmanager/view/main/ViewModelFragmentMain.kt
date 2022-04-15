@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.elchaninov.espmanager.model.DeviceModel
 import com.elchaninov.espmanager.model.repo.DiscoveryEvent
 import com.elchaninov.espmanager.model.repo.NsdRepositoryImpl
-import com.elchaninov.espmanager.model.toDeviceModel
+import com.elchaninov.espmanager.utils.toDeviceModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
