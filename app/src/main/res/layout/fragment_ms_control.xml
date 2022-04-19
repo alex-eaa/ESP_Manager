@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".view.ms.FragmentMsControl">
+    tools:context=".view.ms.FragmentMsMain">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
@@ -61,16 +61,16 @@
                         android:layout_weight="2">
 
                         <androidx.appcompat.widget.AppCompatRadioButton
-                            android:id="@+id/light_on"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="ВКЛ" />
-
-                        <androidx.appcompat.widget.AppCompatRadioButton
                             android:id="@+id/light_off"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="ОТКЛ" />
+
+                        <androidx.appcompat.widget.AppCompatRadioButton
+                            android:id="@+id/light_on"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="ВКЛ" />
 
                         <androidx.appcompat.widget.AppCompatRadioButton
                             android:id="@+id/light_auto"
@@ -117,7 +117,7 @@
                         android:layout_weight="1" />
 
                     <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/switch_pir_1"
+                        android:id="@+id/switch_pir_0"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -130,7 +130,7 @@
                         android:layout_weight="1" />
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/image_pir_1"
+                        android:id="@+id/image_pir_0"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_gravity="center"
@@ -152,7 +152,7 @@
                         android:layout_weight="1" />
 
                     <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/switch_pir_2"
+                        android:id="@+id/switch_pir_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -165,7 +165,7 @@
                         android:layout_weight="1" />
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/image_pir_2"
+                        android:id="@+id/image_pir_1"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_gravity="center"
@@ -188,19 +188,23 @@
             app:cardElevation="8dp">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/delay_text_field"
+                android:id="@+id/delay_text_input_layout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
                 android:hint="Задержка отключения, сек"
+                app:counterMaxLength="6"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/ic_baseline_save_24"
                 app:startIconDrawable="@drawable/ic_baseline_av_timer_24">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/delay_text_field"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
-                    android:text="30" />
+                    tools:text="30" />
             </com.google.android.material.textfield.TextInputLayout>
         </androidx.cardview.widget.CardView>
 
@@ -210,7 +214,21 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:gravity="end"
-            tools:text="000.000.000.000"/>
+            tools:text="000.000.000.000" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="start" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="stop" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </ScrollView>
