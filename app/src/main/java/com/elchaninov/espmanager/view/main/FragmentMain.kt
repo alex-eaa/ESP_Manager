@@ -16,7 +16,8 @@ import com.elchaninov.espmanager.utils.getDeviceType
 import com.elchaninov.espmanager.view.main.recycler.ItemType
 import com.elchaninov.espmanager.view.main.recycler.RecyclerAdapter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 @ExperimentalCoroutinesApi
 class FragmentMain : Fragment(R.layout.fragment_main) {
@@ -24,7 +25,8 @@ class FragmentMain : Fragment(R.layout.fragment_main) {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: ViewModelFragmentMain by sharedViewModel()
+    private val viewModel : ViewModelFragmentMain by viewModel()
+
     private val adapter: RecyclerAdapter by lazy { RecyclerAdapter(onListItemClickListener) }
 
     private val onListItemClickListener: (ItemType) -> Unit = { itemDeviceType ->
@@ -38,12 +40,15 @@ class FragmentMain : Fragment(R.layout.fragment_main) {
 
         viewModel.liveData.observe(viewLifecycleOwner) { setDeviceModels ->
             setDeviceModels.forEachIndexed { index, nsdServiceInfo ->
-                Log.d("qqq", "AVAILABLE services: $index - $nsdServiceInfo")
+                toLog("AVAILABLE services: $index - $nsdServiceInfo")
             }
+
             val list: MutableList<ItemType> = mutableListOf()
+
             if (setDeviceModels.isNotEmpty()) {
                 list.add(ItemType.Title("Устройства в сети"))
             }
+
             list.addAll(setDeviceModels.toList().map { ItemType.Device(it) })
             adapter.setData(list)
         }
@@ -75,8 +80,31 @@ class FragmentMain : Fragment(R.layout.fragment_main) {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.start()
+        toLog("onStart()")
+    }
+
+    override fun onStop() {
+        toLog("onStop() isChangingConfigurations = ${checkChangingConfigurations()}")
+        if (!checkChangingConfigurations()) viewModel.stop()
+        super.onStop()
+    }
+
     override fun onDestroy() {
+        toLog("onDestroy()")
         _binding = null
         super.onDestroy()
+    }
+
+    private fun toLog(message: String) {
+        val className = this.javaClass.simpleName
+        val hashCode = this.hashCode()
+        Log.d("qqq", "$className:$hashCode: $message")
+    }
+
+    private fun checkChangingConfigurations(): Boolean {
+        return requireActivity().isChangingConfigurations
     }
 }
