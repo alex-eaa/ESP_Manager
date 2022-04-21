@@ -34,8 +34,7 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_control) {
 
     private val viewModel: ViewModelFragmentMsMain by viewModel {
         parametersOf(
-            deviceModel,
-            WEB_SOCKET_ADDRESS_PATH
+            deviceModel
         )
     }
 
@@ -53,7 +52,7 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_control) {
 
         viewModel.liveData.observe(viewLifecycleOwner) {
             toLog("from liveData $it")
-            msMainModel = it
+            msMainModel = it as MsMainModel
             renderData()
         }
 
@@ -271,6 +270,5 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_control) {
 
     companion object {
         const val ARG_DEVICE = "argDevice"
-        const val WEB_SOCKET_ADDRESS_PATH = "/index.htm"
     }
 }

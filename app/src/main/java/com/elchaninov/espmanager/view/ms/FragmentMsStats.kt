@@ -18,8 +18,7 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
 
     private val viewModel: ViewModelFragmentMsMain by viewModel {
         parametersOf(
-            deviceModel,
-            FragmentMsMain.WEB_SOCKET_ADDRESS_PATH
+            deviceModel
         )
     }
 
@@ -34,7 +33,7 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
 
         viewModel.liveData.observe(viewLifecycleOwner) {
             toLog("from liveData $it")
-            msMainModel = it
+            msMainModel = it as MsMainModel
             renderData()
         }
     }
@@ -82,6 +81,7 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
 
     private fun toLog(message: String) {
         val className = this.javaClass.simpleName
-        Log.d("qqq", "$className: $message")
+        val hashCode = this.hashCode()
+        Log.d("qqq", "$className:$hashCode: $message")
     }
 }
