@@ -6,4 +6,4 @@ data class MsMainModel(
     val sensor0State: Boolean,
     val sensor1State: Boolean,
     val timeESPOn: Double,
-)
+) : MsModel

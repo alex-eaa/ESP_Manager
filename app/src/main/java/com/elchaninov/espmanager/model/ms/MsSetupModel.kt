@@ -20,7 +20,7 @@ data class MsSetupModel(
     val mqtt_server_port: Int,
     val mqttUser: String,
     val mqttPass: String,
-)
+) : MsModel
 
 
 //WS FROM Server:

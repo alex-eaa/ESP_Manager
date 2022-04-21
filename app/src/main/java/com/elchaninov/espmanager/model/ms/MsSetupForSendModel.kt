@@ -22,7 +22,7 @@ data class MsSetupForSendModel(
     val mqtt_server_port: String,
     val mqttUser: String,
     val mqttPass: String,
-)
+) : MsModelForSend
 
 //WS TO Server:
 //{

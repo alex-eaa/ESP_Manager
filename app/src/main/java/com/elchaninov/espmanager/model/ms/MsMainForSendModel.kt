@@ -7,4 +7,4 @@ data class MsMainForSendModel(
     val delayOff: Int,
     val sensor0Use: Boolean,
     val sensor1Use: Boolean,
-)
+) : MsModelForSend
