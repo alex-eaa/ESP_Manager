@@ -8,6 +8,7 @@ import com.elchaninov.espmanager.R
 import com.elchaninov.espmanager.databinding.FragmentMsStatsBinding
 import com.elchaninov.espmanager.model.DeviceModel
 import com.elchaninov.espmanager.model.ms.MsMainModel
+import com.elchaninov.espmanager.model.ms.MsPage
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -18,7 +19,8 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
 
     private val viewModel: ViewModelFragmentMsMain by viewModel {
         parametersOf(
-            deviceModel
+            deviceModel,
+            MsPage.INDEX
         )
     }
 

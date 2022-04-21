@@ -5,9 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.elchaninov.espmanager.model.DeviceModel
-import com.elchaninov.espmanager.model.ms.MsMainForSendModel
-import com.elchaninov.espmanager.model.ms.MsMainModel
-import com.elchaninov.espmanager.model.ms.MsModel
+import com.elchaninov.espmanager.model.ms.*
 import com.google.gson.Gson
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -18,14 +16,13 @@ import kotlinx.coroutines.*
 
 
 open class ViewModelFragmentMsMain(
-    private val deviceModel: DeviceModel
+    private val deviceModel: DeviceModel,
+    private val msPage: MsPage
 ) : ViewModel() {
 
-    internal open val webSocketAddressPath = "/index.htm"
-
     private var httpClient: HttpClient? = null
-    private var messageToServer: MsMainForSendModel? = null
-    internal val gson = Gson()
+    private var messageToServer: MsModelForSend? = null
+    private val gson = Gson()
 
     private var webSocketsJob: Job? = null
     private val viewModelCoroutineScope = CoroutineScope(
@@ -35,11 +32,11 @@ open class ViewModelFragmentMsMain(
             handleError(throwable)
         })
 
-    internal val _liveData: MutableLiveData<MsModel> = MutableLiveData()
+    private val _liveData: MutableLiveData<MsModel> = MutableLiveData()
     val liveData: LiveData<MsModel> get() = _liveData
 
-    fun send(msMainForSendModel: MsMainForSendModel) {
-        messageToServer = msMainForSendModel
+    fun send(msModelForSend: MsModelForSend) {
+        messageToServer = msModelForSend
     }
 
     fun start() {
@@ -69,7 +66,7 @@ open class ViewModelFragmentMsMain(
             method = HttpMethod.Get,
             host = ip,
             port = deviceModel.port,
-            path = webSocketAddressPath
+            path = msPage.path
         ) {
             toLog("httpClient.webSocket init")
             val userInputRoutine = launch { inputMessages() }
@@ -79,13 +76,13 @@ open class ViewModelFragmentMsMain(
         }
     }
 
-   internal open suspend fun DefaultClientWebSocketSession.outputMessages() {
+    private suspend fun DefaultClientWebSocketSession.outputMessages() {
         try {
             while (true) {
                 (incoming.receive() as? Frame.Text)?.let {
                     val json = it.readText()
                     toLog("json: $json")
-                    val msModel: MsMainModel = gson.fromJson(json, MsMainModel::class.java)
+                    val msModel: MsModel = deserializationJson(json)
                     _liveData.postValue(msModel)
                 }
             }
@@ -99,13 +96,24 @@ open class ViewModelFragmentMsMain(
             if (messageToServer != null) {
                 try {
                     val json = gson.toJson(messageToServer)
-                    send(json)
+//                    send(json)
                     messageToServer = null
                     toLog("Отправлено json: $json")
                 } catch (e: Exception) {
                     println("Error while sending: " + e.localizedMessage)
                     return
                 }
+            }
+        }
+    }
+
+    private fun deserializationJson(json: String): MsModel {
+        return when (msPage) {
+            MsPage.INDEX -> {
+                gson.fromJson(json, MsMainModel::class.java)
+            }
+            MsPage.SETUP -> {
+                gson.fromJson(json, MsSetupModel::class.java)
             }
         }
     }
@@ -121,7 +129,7 @@ open class ViewModelFragmentMsMain(
         super.onCleared()
     }
 
-    internal fun toLog(message: String) {
+    private fun toLog(message: String) {
         val className = this.javaClass.simpleName
         val hashCode = this.hashCode()
         Log.d("qqq", "$className:$hashCode: $message")
