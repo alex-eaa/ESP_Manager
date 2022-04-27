@@ -1,4 +1,4 @@
-package com.elchaninov.espmanager.model.repo
+package com.elchaninov.espmanager.model.repo.nsd
 
 import android.net.nsd.NsdServiceInfo
 import kotlinx.coroutines.flow.Flow

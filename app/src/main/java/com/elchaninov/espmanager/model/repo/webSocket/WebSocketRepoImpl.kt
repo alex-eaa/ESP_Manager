@@ -1,4 +1,4 @@
-package com.elchaninov.espmanager.view.ms
+package com.elchaninov.espmanager.model.repo.webSocket
 
 import android.util.Log
 import kotlinx.coroutines.delay

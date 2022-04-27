@@ -1,4 +1,4 @@
-package com.elchaninov.espmanager.model.repo
+package com.elchaninov.espmanager.model.repo.nsd
 
 import android.content.Context
 import android.net.nsd.NsdManager

@@ -1,4 +1,4 @@
-package com.elchaninov.espmanager.view.ms
+package com.elchaninov.espmanager.model.repo.webSocket
 
 import android.util.Log
 import kotlinx.coroutines.channels.Channel
@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.callbackFlow
 import okhttp3.*
 
-class WebSocketFlowRepoImpl(private val request: Request) : WebSocketFlowRepo{
+class WebSocketFlowRepoImpl(private val request: Request) : WebSocketFlowRepo {
 
     private val httpClient = OkHttpClient()
     private var mWebSocket: WebSocket? = null

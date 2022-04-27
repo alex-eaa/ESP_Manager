@@ -1,7 +1,5 @@
 package com.elchaninov.espmanager.model.ms
 
-import androidx.collection.arrayMapOf
-
 
 fun MsMainModel.toMsMainForSendModel() = MsMainForSendModel(
     relayMode = this.relay.relayMode,

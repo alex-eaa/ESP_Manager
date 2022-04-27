@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
 import com.elchaninov.espmanager.model.ms.*
+import com.elchaninov.espmanager.model.repo.webSocket.WebSocketRepo
+import com.elchaninov.espmanager.model.repo.webSocket.WebSocketRepoImpl
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

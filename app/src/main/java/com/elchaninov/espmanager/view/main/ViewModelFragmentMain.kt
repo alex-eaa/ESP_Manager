@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.elchaninov.espmanager.model.DeviceModel
-import com.elchaninov.espmanager.model.repo.DiscoveryEvent
-import com.elchaninov.espmanager.model.repo.NsdRepositoryImpl
+import com.elchaninov.espmanager.model.repo.nsd.DiscoveryEvent
+import com.elchaninov.espmanager.model.repo.nsd.NsdRepositoryImpl
 import com.elchaninov.espmanager.utils.toDeviceModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect

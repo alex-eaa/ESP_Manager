@@ -1,4 +1,4 @@
-package com.elchaninov.espmanager.view.ms
+package com.elchaninov.espmanager.model.repo.webSocket
 
 import kotlinx.coroutines.flow.Flow
 
