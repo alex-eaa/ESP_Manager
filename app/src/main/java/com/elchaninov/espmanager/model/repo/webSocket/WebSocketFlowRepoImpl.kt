@@ -1,11 +1,9 @@
 package com.elchaninov.espmanager.model.repo.webSocket
 
 import android.util.Log
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.callbackFlow
 import okhttp3.*
 
@@ -15,13 +13,13 @@ class WebSocketFlowRepoImpl(private val request: Request) : WebSocketFlowRepo {
     private var mWebSocket: WebSocket? = null
 
     override suspend fun sendToWebSocket(text: String): Boolean {
-        toLog("sendToWebSocket() Отправляем на устройство: $text")
+        toLog("sendToWebSocket()")
         mWebSocket?.let {
             it.send(text)
             while (it.queueSize() > 0) {
-                delay(20L)
+                delay(10L)
             }
-            toLog("Сообщение отправлено успешно")
+            toLog("Сообщение отправлено успешно: $text")
             return true
         }
         toLog("Неудалось отправить сообщение, mWebSocket=$mWebSocket")
@@ -64,7 +62,7 @@ class WebSocketFlowRepoImpl(private val request: Request) : WebSocketFlowRepo {
         awaitClose {
             mWebSocket?.close(1000, null)
         }
-    }.buffer(Channel.BUFFERED)
+    }
 
 
     private fun toLog(message: String) {

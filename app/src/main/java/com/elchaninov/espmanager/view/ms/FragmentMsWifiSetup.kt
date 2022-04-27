@@ -68,10 +68,6 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
         }
     }
 
-    private fun unsubscribeLiveData() {
-        viewModel.liveData.removeObservers(viewLifecycleOwner)
-    }
-
     private fun sendData() {
         (viewModel.getLoadedMsModel() as? MsSetupModel)?.let { msModel ->
             val msSetupForSendModel: MsSetupForSendModel = msModel.toMsSetupForSendModel()
@@ -106,12 +102,7 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
         AlertDialog.Builder(requireContext())
             .setMessage("Сохранить настройки")
             .setPositiveButton("СОХРАНИТЬ") { dialog, _ ->
-
-                lifecycleScope.launch {
-                    viewModel.send(msSetupForSendModel)
-//                    reloadDataAndRender()
-                }
-
+                viewModel.send(msSetupForSendModel)
                 dialog.dismiss()
             }
             .setNegativeButton("ОТМЕНА") { dialog, _ ->

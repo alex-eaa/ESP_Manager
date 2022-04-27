@@ -13,8 +13,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import okhttp3.Request
 
@@ -28,10 +27,8 @@ open class ViewModelFragmentMsMain(
     private lateinit var webSocketFlowRepoImpl: WebSocketFlowRepoImpl
     private var job: Job? = null
 
-    private val _liveData: MutableLiveData<AppState> = MutableLiveData(AppState.Loading)
+    private val _liveData: MutableLiveData<AppState> = MutableLiveData()
     val liveData: LiveData<AppState> get() = _liveData
-
-    fun getLoadedMsModel(): MsModel? = (liveData.value as? AppState.Success)?.msModel
 
     init {
         deviceModel.ip?.let { ip ->
@@ -49,6 +46,7 @@ open class ViewModelFragmentMsMain(
             job = viewModelScope.launch(handler) {
                 toLog("startFlow() Flow started")
                 webSocketFlowRepoImpl.getFlow()
+                    .onStart { _liveData.postValue(AppState.Loading) }
                     .catch { e ->
                         toLog("ERROR in Flow")
                         _liveData.postValue(AppState.Error(e))
@@ -67,6 +65,7 @@ open class ViewModelFragmentMsMain(
     fun send(msModelForSend: MsModelForSend) {
         toLog("send")
         viewModelScope.launch(Dispatchers.IO) {
+            _liveData.postValue(AppState.Loading)
             webSocketFlowRepoImpl.sendToWebSocket(gson.toJson(msModelForSend))
         }
     }

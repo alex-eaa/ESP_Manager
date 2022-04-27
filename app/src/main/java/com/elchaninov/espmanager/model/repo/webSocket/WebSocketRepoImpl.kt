@@ -11,50 +11,50 @@ class WebSocketRepoImpl(private val request: Request) : WebSocketRepo {
     private var receivedMessage: String? = null
 
     override suspend fun send(text: String) {
-        toLog("send() Отправляем на устройство: $text")
+        toLog("send()")
         connectWebSocket()
         mWebSocket?.let {
             it.send(text)
             while (it.queueSize() > 0) {
                 delay(20L)
             }
-            toLog("send() Сообщение отправлено")
+            toLog("send() Сообщение отправлено: $text")
             disconnectWebSocket()
         }
     }
 
     override suspend fun get(): String? {
-        toLog("get() Получаем данные с устройства")
+        toLog("get()")
         receivedMessage = null
         connectWebSocket()
         while (receivedMessage == null && mWebSocket != null) {
-            delay(20L)
+            delay(10L)
         }
         disconnectWebSocket()
         return receivedMessage
     }
 
     private suspend fun connectWebSocket() {
-        toLog("connectWebSocket() START")
+//        toLog("connectWebSocket() START")
         if (mWebSocket == null) {
-            toLog("connectWebSocket() connecting to WebSocket")
+//            toLog("connectWebSocket() connecting to WebSocket")
             httpClient.newWebSocket(request, webSocketListener)
             while (mWebSocket == null) {
-                delay(20L)
+                delay(10L)
             }
-            toLog("connectWebSocket() COMPLETED")
+//            toLog("connectWebSocket() CONNECTED")
         }
     }
 
     private suspend fun disconnectWebSocket() {
-        toLog("disconnectWebSocket() START")
+//        toLog("disconnectWebSocket() START")
         if (mWebSocket != null) {
-            toLog("disconnectWebSocket() disconnecting from WebSocket")
+//            toLog("disconnectWebSocket() disconnecting from WebSocket")
             mWebSocket?.close(1000, null)
             while (mWebSocket != null) {
-                delay(20L)
+                delay(10L)
             }
-            toLog("disconnectWebSocket() COMPLETED")
+//            toLog("disconnectWebSocket() DISCONNECTED")
         }
     }
 
