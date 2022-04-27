@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.elchaninov.espmanager.R
 import com.elchaninov.espmanager.databinding.FragmentMsWifiSetupBinding
 import com.elchaninov.espmanager.model.AppState
@@ -19,8 +18,6 @@ import com.elchaninov.espmanager.model.ms.*
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
 import com.google.android.material.textfield.TextInputEditText
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -45,15 +42,15 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
         toLog("onViewCreated()")
         deviceModel = requireArguments().getParcelable(FragmentMsMain.ARG_DEVICE)
 
-        if (savedInstanceState == null) {
-            viewModel.get()
-        }
         subscribeLiveData()
-
-
         switchesWifiModeSListenerInit()
         editTextListenerInit()
+
+        if (savedInstanceState == null) {
+            updateData()
+        }
     }
+
 
     private fun subscribeLiveData() {
         viewModel.liveData.observe(viewLifecycleOwner) { appState ->
@@ -73,24 +70,40 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
             val msSetupForSendModel: MsSetupForSendModel = msModel.toMsSetupForSendModel()
 
             binding.apply {
-                if (!apModeSwitch.isChecked && wifiSsidTextField.error == null && wifiPasswordTextField.error == null) {
+                if (!apModeSwitch.isChecked) {
                     msSetupForSendModel.wifiAP_mode = apModeSwitch.isChecked
-                    msSetupForSendModel.p_ssid = (wifiSsidEditText as TextView).text.toString()
-                    msSetupForSendModel.p_password =
-                        (wifiPasswordEditText as TextView).text.toString()
-                }
-                if (apModeSwitch.isChecked && apSsidTextField.error == null && apPasswordTextField.error == null) {
-                    msSetupForSendModel.wifiAP_mode = apModeSwitch.isChecked
-                    msSetupForSendModel.p_ssidAP = (apSsidEditText as TextView).text.toString()
-                    msSetupForSendModel.p_passwordAP =
-                        (apPasswordEditText as TextView).text.toString()
+                    if (wifiSsidTextField.error == null && wifiPasswordTextField.error == null) {
+                        msSetupForSendModel.p_ssid = (wifiSsidEditText as TextView).text.toString()
+                        msSetupForSendModel.p_password =
+                            (wifiPasswordEditText as TextView).text.toString()
+                    } else {
+                        showErrorAlertDialog()
+                        return
+                    }
                 }
 
-                if (staticIpCheckbox.isChecked && wifiIpTextField.error == null && wifiMaskTextField.error == null && wifiGatewayTextField.error == null) {
+                if (apModeSwitch.isChecked) {
+                    msSetupForSendModel.wifiAP_mode = apModeSwitch.isChecked
+                    if (apSsidTextField.error == null && apPasswordTextField.error == null) {
+                        msSetupForSendModel.p_ssidAP = (apSsidEditText as TextView).text.toString()
+                        msSetupForSendModel.p_passwordAP =
+                            (apPasswordEditText as TextView).text.toString()
+                    } else {
+                        showErrorAlertDialog()
+                        return
+                    }
+                }
+
+                if (staticIpCheckbox.isChecked) {
                     msSetupForSendModel.static_IP = staticIpCheckbox.isChecked
-                    msSetupForSendModel.ip = getIpAddressListFromEditText(wifiIpEditText)
-                    msSetupForSendModel.sbnt = getIpAddressListFromEditText(wifiMaskEditText)
-                    msSetupForSendModel.gtw = getIpAddressListFromEditText(wifiGatewayEditText)
+                    if (wifiIpTextField.error == null && wifiMaskTextField.error == null && wifiGatewayTextField.error == null) {
+                        msSetupForSendModel.ip = getIpAddressListFromEditText(wifiIpEditText)
+                        msSetupForSendModel.sbnt = getIpAddressListFromEditText(wifiMaskEditText)
+                        msSetupForSendModel.gtw = getIpAddressListFromEditText(wifiGatewayEditText)
+                    } else {
+                        showErrorAlertDialog()
+                        return
+                    }
                 }
 
                 showConfirmAlertDialog(msSetupForSendModel)
@@ -125,27 +138,35 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
         (editText as TextView).text.toString().split(".").map { it.toInt().toString() }
 
     private fun renderData(msModel: MsModel?) {
-        (msModel as? MsSetupModel)?.let {
-            toLog("renderData $it")
-            binding.apply {
-                wifiModeSwitch.isChecked = !it.wifiAP_mode
-                apModeSwitch.isChecked = it.wifiAP_mode
+        if (viewModel.liveDataIsEditingMode.value == false) {
+            (msModel as? MsSetupModel)?.let {
+                toLog("renderData $it")
+                binding.apply {
+                    wifiModeSwitch.isChecked = !it.wifiAP_mode
+                    apModeSwitch.isChecked = it.wifiAP_mode
 
-                (wifiSsidEditText as? TextView)?.text = it.p_ssid
-                (wifiPasswordEditText as? TextView)?.text = it.p_password
+                    (wifiSsidEditText as? TextView)?.text = it.p_ssid
+                    (wifiPasswordEditText as? TextView)?.text = it.p_password
 
-                staticIpCheckbox.isChecked = it.static_IP
+                    staticIpCheckbox.isChecked = it.static_IP
 
-                (wifiIpEditText as? TextView)?.text = getFormattedStringIpV4(it.ip)
-                (wifiMaskEditText as? TextView)?.text = getFormattedStringIpV4(it.sbnt)
-                (wifiGatewayEditText as? TextView)?.text = getFormattedStringIpV4(it.gtw)
+                    (wifiIpEditText as? TextView)?.text = getFormattedStringIpV4(it.ip)
+                    (wifiMaskEditText as? TextView)?.text = getFormattedStringIpV4(it.sbnt)
+                    (wifiGatewayEditText as? TextView)?.text = getFormattedStringIpV4(it.gtw)
 
-                (apSsidEditText as? TextView)?.text = it.p_ssidAP
-                (apPasswordEditText as? TextView)?.text = it.p_passwordAP
+                    (apSsidEditText as? TextView)?.text = it.p_ssidAP
+                    (apPasswordEditText as? TextView)?.text = it.p_passwordAP
+                }
             }
-        }
 
-        updateEnabledTextFields()
+            updateEnabledTextFields()
+        }
+    }
+
+    private fun updateData(){
+        viewModel.setEditingMode(false)
+        binding.root.clearFocus()
+        viewModel.getData()
     }
 
     private fun switchesWifiModeSListenerInit() {
@@ -153,15 +174,57 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
             wifiModeSwitch.setOnClickListener {
                 apModeSwitch.isChecked = !wifiModeSwitch.isChecked
                 updateEnabledTextFields()
+                viewModel.setEditingMode(true)
             }
 
             apModeSwitch.setOnClickListener {
                 wifiModeSwitch.isChecked = !apModeSwitch.isChecked
                 updateEnabledTextFields()
+                viewModel.setEditingMode(true)
             }
 
             staticIpCheckbox.setOnClickListener {
                 updateEnabledTextFields()
+                viewModel.setEditingMode(true)
+            }
+        }
+    }
+
+    private fun editTextListenerInit() {
+        binding.apply {
+            wifiSsidEditText.doOnTextChanged { text, _, _, _ ->
+                wifiSsidTextField.error = checkErrorsInSsidName(text.toString())
+                if (wifiSsidEditText.isFocused) viewModel.setEditingMode(true)
+            }
+
+            wifiPasswordEditText.doOnTextChanged { text, _, _, _ ->
+                wifiPasswordTextField.error = checkErrorsInPassword(text.toString())
+                if (wifiPasswordEditText.isFocused) viewModel.setEditingMode(true)
+            }
+
+            wifiIpEditText.doOnTextChanged { text, _, _, _ ->
+                wifiIpTextField.error = checkErrorsInIpAddress(text.toString())
+                if (wifiIpEditText.isFocused) viewModel.setEditingMode(true)
+            }
+
+            wifiMaskEditText.doOnTextChanged { text, _, _, _ ->
+                wifiMaskTextField.error = checkErrorsInIpAddress(text.toString())
+                if (wifiMaskTextField.isFocused) viewModel.setEditingMode(true)
+            }
+
+            wifiGatewayEditText.doOnTextChanged { text, _, _, _ ->
+                wifiGatewayTextField.error = checkErrorsInIpAddress(text.toString())
+                if (wifiGatewayEditText.isFocused) viewModel.setEditingMode(true)
+            }
+
+            apSsidEditText.doOnTextChanged { text, _, _, _ ->
+                apSsidTextField.error = checkErrorsInSsidName(text.toString())
+                if (apSsidEditText.isFocused) viewModel.setEditingMode(true)
+            }
+
+            apPasswordEditText.doOnTextChanged { text, _, _, _ ->
+                apPasswordTextField.error = checkErrorsInPassword(text.toString())
+                if (apPasswordEditText.isFocused) viewModel.setEditingMode(true)
             }
         }
     }
@@ -179,38 +242,6 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
             wifiIpTextField.isEnabled = staticIpCheckbox.isChecked && wifiModeSwitch.isChecked
             wifiMaskTextField.isEnabled = staticIpCheckbox.isChecked && wifiModeSwitch.isChecked
             wifiGatewayTextField.isEnabled = staticIpCheckbox.isChecked && wifiModeSwitch.isChecked
-        }
-    }
-
-    private fun editTextListenerInit() {
-        binding.apply {
-            wifiSsidEditText.doOnTextChanged { text, _, _, _ ->
-                wifiSsidTextField.error = checkErrorsInSsidName(text.toString())
-            }
-
-            wifiPasswordEditText.doOnTextChanged { text, _, _, _ ->
-                wifiPasswordTextField.error = checkErrorsInPassword(text.toString())
-            }
-
-            wifiIpEditText.doOnTextChanged { text, _, _, _ ->
-                wifiIpTextField.error = checkErrorsInIpAddress(text.toString())
-            }
-
-            wifiMaskEditText.doOnTextChanged { text, _, _, _ ->
-                wifiMaskTextField.error = checkErrorsInIpAddress(text.toString())
-            }
-
-            wifiGatewayEditText.doOnTextChanged { text, _, _, _ ->
-                wifiGatewayTextField.error = checkErrorsInIpAddress(text.toString())
-            }
-
-            apSsidEditText.doOnTextChanged { text, _, _, _ ->
-                apSsidTextField.error = checkErrorsInSsidName(text.toString())
-            }
-
-            apPasswordEditText.doOnTextChanged { text, _, _, _ ->
-                apPasswordTextField.error = checkErrorsInPassword(text.toString())
-            }
         }
     }
 
@@ -232,13 +263,18 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_toolbar_ms_setup, menu)
+
+        viewModel.liveDataIsEditingMode.observe(viewLifecycleOwner) {
+            menu.findItem(R.id.action_settings_save).isVisible = it
+        }
+
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_settings_reload -> {
-                viewModel.get()
+                updateData()
                 return true
             }
             R.id.action_settings_save -> {
@@ -250,23 +286,14 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun reloadDataAndRender() {
-        lifecycleScope.launch(Dispatchers.Main) {
-//            viewModel.reconnectWebSocket()
-//            subscribeLiveData()
-        }
-    }
-
     override fun onStart() {
         super.onStart()
-//        viewModel.connect()
         updateEnabledTextFields()
         toLog("onStart()")
     }
 
     override fun onStop() {
         toLog("onStop() isChangingConfigurations = ${checkChangingConfigurations()}")
-//        if (!checkChangingConfigurations()) viewModel.disconnect()
         super.onStop()
     }
 

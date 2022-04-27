@@ -27,6 +27,9 @@ open class ViewModelFragmentMsSetup(
     private val _liveData: MutableLiveData<AppState> = MutableLiveData(AppState.Loading)
     val liveData: LiveData<AppState> get() = _liveData
 
+    private val _liveDataIsEditingMode: MutableLiveData<Boolean> = MutableLiveData(false)
+    val liveDataIsEditingMode: LiveData<Boolean> get() = _liveDataIsEditingMode
+
     fun getLoadedMsModel(): MsModel? = (liveData.value as? AppState.Success)?.msModel
 
     init {
@@ -38,7 +41,11 @@ open class ViewModelFragmentMsSetup(
         }
     }
 
-    fun get() {
+    fun setEditingMode(value: Boolean){
+        _liveDataIsEditingMode.value = value
+    }
+
+    fun getData() {
         webSocketRepo?.let {
             _liveData.postValue(AppState.Loading)
             viewModelScope.launch(Dispatchers.IO) {
@@ -55,7 +62,7 @@ open class ViewModelFragmentMsSetup(
             _liveData.postValue(AppState.Loading)
             viewModelScope.launch(Dispatchers.IO) {
                 it.send(gson.toJson(msSetupForSendModel))
-                get()
+                getData()
             }
         }
     }
