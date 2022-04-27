@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_settings_reload"
+        android:icon="@drawable/ic_baseline_autorenew_24"
+        android:title="Обновить"
+        app:showAsAction="always" />
     <item
         android:id="@+id/action_settings_save"
         android:icon="@drawable/ic_baseline_save_24"
         android:title="Сохранить"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 </menu>

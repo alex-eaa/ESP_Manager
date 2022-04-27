@@ -2,6 +2,7 @@ package com.elchaninov.espmanager.di
 
 import com.elchaninov.espmanager.model.repo.NsdRepositoryImpl
 import com.elchaninov.espmanager.view.main.ViewModelFragmentMain
+import com.elchaninov.espmanager.view.ms.ViewModelFragmentMsSetup
 import com.elchaninov.espmanager.view.ms.ViewModelFragmentMsMain
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.ext.koin.androidContext
@@ -15,6 +16,10 @@ val application = module {
     single { NsdRepositoryImpl(androidContext()) }
 
     viewModel { ViewModelFragmentMain(get()) }
+
+    viewModel { parameters ->
+        ViewModelFragmentMsSetup(deviceModel = parameters.get(), msPage = parameters.get())
+    }
 
     viewModel { parameters ->
         ViewModelFragmentMsMain(deviceModel = parameters.get(), msPage = parameters.get())

@@ -20,10 +20,13 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.navOptions
 import com.elchaninov.espmanager.R
 import com.elchaninov.espmanager.databinding.FragmentMsControlBinding
+import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
 import com.elchaninov.espmanager.model.ms.MsMainModel
 import com.elchaninov.espmanager.model.ms.MsPage
 import com.elchaninov.espmanager.model.ms.toMsMainForSendModel
+import com.elchaninov.espmanager.utils.hide
+import com.elchaninov.espmanager.utils.show
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -52,20 +55,30 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_control) {
 
         deviceModel = args.device
 
-        viewModel.liveData.observe(viewLifecycleOwner) {
-            toLog("from liveData $it")
-            msMainModel = it as MsMainModel
-            renderData()
+        viewModel.liveData.observe(viewLifecycleOwner) {appState ->
+            when (appState) {
+                is AppState.Loading -> {
+                    binding.includeProgress.progressBar.show()
+                }
+                is AppState.Success -> {
+                    binding.includeProgress.progressBar.hide()
+                    toLog("from liveData ${appState.msModel}")
+                    msMainModel = appState.msModel as MsMainModel
+                    renderData()
+                }
+                else -> {}
+            }
         }
 
         viewListenerInit()
 
-        binding.buttonStart.setOnClickListener { viewModel.start() }
-        binding.buttonStop.setOnClickListener { viewModel.stop() }
+//        binding.buttonStart.setOnClickListener { viewModel.startFlow() }
+        binding.buttonStop.setOnClickListener { viewModel.stopFlow() }
     }
 
     private fun renderData() {
         msMainModel?.let {
+            toLog("renderData $it")
 
             when (it.relay.relayState) {
                 true -> lightState(LightState.ON)
@@ -244,13 +257,13 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_control) {
 
     override fun onStart() {
         toLog("onStart()")
-        viewModel.start()
+        viewModel.startFlow()
         super.onStart()
     }
 
     override fun onStop() {
         toLog("onStop() isChangingConfigurations = ${checkChangingConfigurations()}")
-        if (!checkChangingConfigurations()) viewModel.stop()
+        if (!checkChangingConfigurations()) viewModel.stopFlow()
         super.onStop()
     }
 

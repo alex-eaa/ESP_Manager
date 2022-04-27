@@ -1,5 +1,7 @@
 package com.elchaninov.espmanager.model.ms
 
+import androidx.collection.arrayMapOf
+
 
 fun MsMainModel.toMsMainForSendModel() = MsMainForSendModel(
     relayMode = this.relay.relayMode,
@@ -25,6 +27,27 @@ fun MsSetupModel.toMsSetupForSendModel() = MsSetupForSendModel(
 
     mqtt_server = this.mqtt_server,
     mqtt_server_port = this.mqtt_server_port.toString(),
+    mqttUser = this.mqttUser,
+    mqttPass = this.mqttPass,
+)
+
+fun MsSetupForSendModel.toMsSetupModel() = MsSetupModel(
+    p_ssid = this.p_ssid,
+    p_password = this.p_password,
+    p_ssidAP = this.p_ssidAP,
+    p_passwordAP = this.p_passwordAP,
+
+    ip = this.ip.map { it.toInt() } as ArrayList<Int>,
+    sbnt = this.sbnt.map { it.toInt() } as ArrayList<Int>,
+    gtw = this.gtw.map { it.toInt() } as ArrayList<Int>,
+
+    wifiAP_mode = this.wifiAP_mode,
+    static_IP = this.static_IP,
+    flagLog = this.flagLog,
+    flagMQTT = this.flagMQTT,
+
+    mqtt_server = this.mqtt_server,
+    mqtt_server_port = this.mqtt_server_port.toInt(),
     mqttUser = this.mqttUser,
     mqttPass = this.mqttPass,
 )

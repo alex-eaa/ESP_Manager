@@ -1,6 +1,7 @@
 package com.elchaninov.espmanager.view.ms
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -23,7 +24,7 @@ class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
         _binding = FragmentMsMqttSetupBinding.bind(view)
         setHasOptionsMenu(true)
 
-        deviceModel = requireArguments().getParcelable(FragmentMsControl.ARG_DEVICE)
+        deviceModel = requireArguments().getParcelable(FragmentMsMain.ARG_DEVICE)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -43,5 +44,11 @@ class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
     override fun onDestroy() {
         _binding = null
         super.onDestroy()
+    }
+
+    private fun toLog(message: String) {
+        val className = this.javaClass.simpleName
+        val hashCode = this.hashCode()
+        Log.d("qqq", "$className:$hashCode: $message")
     }
 }

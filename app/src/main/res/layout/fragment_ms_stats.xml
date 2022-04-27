@@ -1,119 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_1"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="8dp"
+    android:layout_height="match_parent"
     tools:context=".view.ms.FragmentMsStats">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp">
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="8dp">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/text_stat_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Статистика работы"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/text_sumSwitchingOn_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Количество включений:"
-            app:layout_constraintEnd_toStartOf="@+id/space"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_stat_title" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_stat_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Статистика работы"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/text_totalTimeOn_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Суммарное время работы освещения:"
-            app:layout_constraintEnd_toStartOf="@+id/space"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_sumSwitchingOn_title" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_sumSwitchingOn_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Количество включений:"
+                app:layout_constraintEnd_toStartOf="@+id/space"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_stat_title" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/text_maxContinuousOn_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Максимальное время непрерывной работы освещения:"
-            app:layout_constraintEnd_toStartOf="@+id/space"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_totalTimeOn_title" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_totalTimeOn_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Суммарное время работы освещения:"
+                app:layout_constraintEnd_toStartOf="@+id/space"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_sumSwitchingOn_title" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/text_timeESPOn_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Время работы устройства после включения:"
-            app:layout_constraintEnd_toStartOf="@+id/space"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_maxContinuousOn_title" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_maxContinuousOn_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Максимальное время непрерывной работы освещения:"
+                app:layout_constraintEnd_toStartOf="@+id/space"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_totalTimeOn_title" />
 
-        <Space
-            android:id="@+id/space"
-            android:layout_width="8dp"
-            android:layout_height="0dp"
-            app:layout_constraintEnd_toStartOf="@id/barrier2"
-            app:layout_constraintTop_toTopOf="parent" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_timeESPOn_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Время работы устройства после включения:"
+                app:layout_constraintEnd_toStartOf="@+id/space"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_maxContinuousOn_title" />
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier2"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:barrierDirection="start"
-            app:constraint_referenced_ids="text_sumSwitchingOn, text_totalTimeOn, text_maxContinuousOn, text_timeESPOn" />
+            <Space
+                android:id="@+id/space"
+                android:layout_width="8dp"
+                android:layout_height="0dp"
+                app:layout_constraintEnd_toStartOf="@id/barrier2"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/text_sumSwitchingOn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/text_sumSwitchingOn_title"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/text_sumSwitchingOn_title"
-            tools:text="575" />
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:barrierDirection="start"
+                app:constraint_referenced_ids="text_sumSwitchingOn, text_totalTimeOn, text_maxContinuousOn, text_timeESPOn" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/text_totalTimeOn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/text_totalTimeOn_title"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/text_totalTimeOn_title"
-            tools:text="6д 19:23:11" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_sumSwitchingOn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/text_sumSwitchingOn_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/text_sumSwitchingOn_title"
+                tools:text="575" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/text_maxContinuousOn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/text_maxContinuousOn_title"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/text_maxContinuousOn_title"
-            tools:text="00:03:11" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_totalTimeOn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/text_totalTimeOn_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/text_totalTimeOn_title"
+                tools:text="6д 19:23:11" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/text_timeESPOn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/text_timeESPOn_title"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/text_timeESPOn_title"
-            tools:text="23д 17:03:11" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_maxContinuousOn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/text_maxContinuousOn_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/text_maxContinuousOn_title"
+                tools:text="00:03:11" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_timeESPOn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/text_timeESPOn_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/text_timeESPOn_title"
+                tools:text="23д 17:03:11" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <include
+        android:id="@+id/include_progress"
+        layout="@layout/progress_bar" />
+
+</FrameLayout>

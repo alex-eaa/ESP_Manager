@@ -6,9 +6,12 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.elchaninov.espmanager.R
 import com.elchaninov.espmanager.databinding.FragmentMsStatsBinding
+import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
 import com.elchaninov.espmanager.model.ms.MsMainModel
 import com.elchaninov.espmanager.model.ms.MsPage
+import com.elchaninov.espmanager.utils.hide
+import com.elchaninov.espmanager.utils.show
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -33,15 +36,23 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
 
         deviceModel = requireArguments().getParcelable(FragmentMsMain.ARG_DEVICE)
 
-        viewModel.liveData.observe(viewLifecycleOwner) {
-            toLog("from liveData $it")
-            msMainModel = it as MsMainModel
-            renderData()
+        viewModel.liveData.observe(viewLifecycleOwner) { appState ->
+            when (appState) {
+                is AppState.Loading -> binding.includeProgress.progressBar.show()
+                is AppState.Success -> {
+                    binding.includeProgress.progressBar.hide()
+                    toLog("from liveData ${appState.msModel}")
+                    msMainModel = appState.msModel as MsMainModel
+                    renderData()
+                }
+                else -> {}
+            }
         }
     }
 
     private fun renderData() {
         msMainModel?.let {
+            toLog("renderData $it")
             binding.textSumSwitchingOn.text = it.relay.sumSwitchingOn.toString()
             binding.textTotalTimeOn.text = millisToTime(it.relay.totalTimeOn)
             binding.textMaxContinuousOn.text = millisToTime(it.relay.maxContinuousOn)
@@ -62,12 +73,12 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
     override fun onStart() {
         super.onStart()
         toLog("onStart()")
-        viewModel.start()
+        viewModel.startFlow()
     }
 
     override fun onStop() {
         toLog("onStop() isChangingConfigurations = ${checkChangingConfigurations()}")
-        if (!checkChangingConfigurations()) viewModel.stop()
+        if (!checkChangingConfigurations()) viewModel.stopFlow()
         super.onStop()
     }
 

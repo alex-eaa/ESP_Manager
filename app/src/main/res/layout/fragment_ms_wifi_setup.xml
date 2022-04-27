@@ -1,195 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     tools:context=".view.ms.FragmentMsWifiSetup">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_1"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="8dp">
+            android:orientation="vertical">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="10dp">
+                android:layout_margin="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="8dp">
 
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/switch_wifi_mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Режим клиента"
-                    android:textSize="18sp" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/wifi_name_text_field"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:hint="Имя сети"
-                    app:counterMaxLength="32"
-                    app:endIconMode="clear_text">
+                    android:orientation="vertical"
+                    android:padding="10dp">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/wifi_name_edit_text"
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/wifi_mode_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Режим клиента"
+                        android:textSize="18sp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/wifi_ssid_text_field"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="text"
-                        android:text="WIFI_NAME" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_marginTop="8dp"
+                        android:hint="Имя сети"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="31"
+                        app:endIconMode="clear_text"
+                        app:errorEnabled="true">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/wifi_password_text_field"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:hint="Пароль"
-                    app:counterMaxLength="63"
-                    app:endIconMode="password_toggle">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/wifi_ssid_edit_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:maxLength="31"
+                            tools:text="WIFI_NAME" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/wifi_password_edit_text"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/wifi_password_text_field"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textPassword"
-                        android:text="123456" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_marginTop="8dp"
+                        android:hint="Пароль"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="63"
+                        app:endIconMode="password_toggle"
+                        app:errorEnabled="true">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/wifi_password_edit_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPassword"
+                            android:maxLength="63"
+                            tools:text="12345678" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
 
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Статический IP-адрес:" />
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/static_ip_checkbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Статический IP-адрес:" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/wifi_ip_text_field"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:hint="IP-адрес">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/wifi_ip_edit_text"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/wifi_ip_text_field"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:digits="0123456789."
-                        android:inputType="number"
-                        android:text="192.168.1.140" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_marginTop="8dp"
+                        android:hint="IP-адрес"
+                        app:errorEnabled="true"
+                        app:placeholderText="000.000.000.000">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/wifi_mask_text_field"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:hint="Маска подсети">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/wifi_ip_edit_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:digits="0123456789."
+                            android:inputType="number"
+                            tools:text="000.000.000.000" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/wifi_mask_edit_text"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/wifi_mask_text_field"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:digits="0123456789."
-                        android:inputType="number"
-                        android:text="255.255.255.0" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_marginTop="8dp"
+                        android:hint="Маска подсети"
+                        app:errorEnabled="true"
+                        app:placeholderText="000.000.000.000">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/wifi_gateway_text_field"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:hint="Шлюз">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/wifi_mask_edit_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:digits="0123456789."
+                            android:inputType="number"
+                            tools:text="000.000.000.000" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/wifi_gateway_edit_text"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/wifi_gateway_text_field"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:digits="0123456789."
-                        android:inputType="number"
-                        android:text="192.168.1.1" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_marginTop="8dp"
+                        android:hint="Шлюз"
+                        app:errorEnabled="true"
+                        app:placeholderText="000.000.000.000">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/wifi_gateway_edit_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:digits="0123456789."
+                            android:inputType="number"
+                            tools:text="000.000.000.000" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.cardview.widget.CardView>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.cardview.widget.CardView>
 
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="8dp">
-
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="10dp">
+                android:layout_margin="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="8dp">
 
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/switch_ap_mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Режим точки доступа"
-                    android:textSize="18sp" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/ap_name_text_field"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:hint="Имя сети"
-                    app:counterMaxLength="32"
-                    app:endIconMode="clear_text">
+                    android:orientation="vertical"
+                    android:padding="10dp">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/ap_name_edit_text"
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/ap_mode_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Режим точки доступа"
+                        android:textSize="18sp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/ap_ssid_text_field"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="text"
-                        android:text="lamp" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_marginTop="8dp"
+                        android:hint="Имя сети"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="31"
+                        app:endIconMode="clear_text"
+                        app:errorEnabled="true">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/ap_password_text_field"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:hint="Пароль"
-                    app:counterMaxLength="63"
-                    app:endIconMode="password_toggle">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/ap_ssid_edit_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:maxLength="31"
+                            tools:text="lamp" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/ap_password_edit_text"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/ap_password_text_field"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textPassword"
-                        android:text="1234567890lamp" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_marginTop="8dp"
+                        android:hint="Пароль"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="63"
+                        app:endIconMode="password_toggle"
+                        app:errorEnabled="true">
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.cardview.widget.CardView>
-    </androidx.appcompat.widget.LinearLayoutCompat>
-</ScrollView>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/ap_password_edit_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPassword"
+                            android:maxLength="63"
+                            tools:text="1234567890lamp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.cardview.widget.CardView>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </ScrollView>
+
+    <include
+        android:id="@+id/include_progress"
+        layout="@layout/progress_bar" />
+
+</FrameLayout>
+
+
+

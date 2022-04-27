@@ -4,24 +4,24 @@ package com.elchaninov.espmanager.model.ms
 data class MsSetupForSendModel(
     val page: String = "setup",
 
-    val p_ssid: String,
-    val p_password: String,
-    val p_ssidAP: String,
-    val p_passwordAP: String,
+    var p_ssid: String,
+    var p_password: String,
+    var p_ssidAP: String,
+    var p_passwordAP: String,
 
-    val ip: List<String>,
-    val sbnt: List<String>,
-    val gtw: List<String>,
+    var ip: List<String>,
+    var sbnt: List<String>,
+    var gtw: List<String>,
 
-    val wifiAP_mode: Boolean,
-    val static_IP: Boolean,
-    val flagLog: Boolean,
-    val flagMQTT: Boolean,
+    var wifiAP_mode: Boolean,
+    var static_IP: Boolean,
+    var flagLog: Boolean,
+    var flagMQTT: Boolean,
 
-    val mqtt_server: String,
-    val mqtt_server_port: String,
-    val mqttUser: String,
-    val mqttPass: String,
+    var mqtt_server: String,
+    var mqtt_server_port: String,
+    var mqttUser: String,
+    var mqttPass: String,
 ) : MsModelForSend
 
 //WS TO Server:
