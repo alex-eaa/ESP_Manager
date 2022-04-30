@@ -7,16 +7,19 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.elchaninov.espmanager.R
 import com.elchaninov.espmanager.databinding.FragmentMsWifiSetupBinding
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
-import com.elchaninov.espmanager.model.ms.*
+import com.elchaninov.espmanager.model.ms.MsModel
+import com.elchaninov.espmanager.model.ms.MsPage
+import com.elchaninov.espmanager.model.ms.MsSetupModel
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
+import com.elchaninov.espmanager.view.AlertType
+import com.elchaninov.espmanager.view.MyDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -49,6 +52,8 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
         if (savedInstanceState == null) {
             updateData()
         }
+
+        setupAlertDialogFragmentListener()
     }
 
 
@@ -66,18 +71,20 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
     }
 
     private fun sendData() {
-        (viewModel.getLoadedMsModel() as? MsSetupModel)?.let { msModel ->
-            val msSetupForSendModel: MsSetupForSendModel = msModel.toMsSetupForSendModel()
+        viewModel.createMsSetupForSendModel()
+
+        viewModel.msSetupForSendModel?.let { msSetupForSendModel ->
 
             binding.apply {
                 if (!apModeSwitch.isChecked) {
                     msSetupForSendModel.wifiAP_mode = apModeSwitch.isChecked
                     if (wifiSsidTextField.error == null && wifiPasswordTextField.error == null) {
-                        msSetupForSendModel.p_ssid = (wifiSsidEditText as TextView).text.toString()
+                        msSetupForSendModel.p_ssid =
+                            (wifiSsidEditText as TextView).text.toString()
                         msSetupForSendModel.p_password =
                             (wifiPasswordEditText as TextView).text.toString()
                     } else {
-                        showErrorAlertDialog()
+                        showAlertDialogFragment(AlertType.ERROR)
                         return
                     }
                 }
@@ -85,11 +92,12 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
                 if (apModeSwitch.isChecked) {
                     msSetupForSendModel.wifiAP_mode = apModeSwitch.isChecked
                     if (apSsidTextField.error == null && apPasswordTextField.error == null) {
-                        msSetupForSendModel.p_ssidAP = (apSsidEditText as TextView).text.toString()
+                        msSetupForSendModel.p_ssidAP =
+                            (apSsidEditText as TextView).text.toString()
                         msSetupForSendModel.p_passwordAP =
                             (apPasswordEditText as TextView).text.toString()
                     } else {
-                        showErrorAlertDialog()
+                        showAlertDialogFragment(AlertType.ERROR)
                         return
                     }
                 }
@@ -97,41 +105,31 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
                 if (staticIpCheckbox.isChecked) {
                     msSetupForSendModel.static_IP = staticIpCheckbox.isChecked
                     if (wifiIpTextField.error == null && wifiMaskTextField.error == null && wifiGatewayTextField.error == null) {
-                        msSetupForSendModel.ip = getIpAddressListFromEditText(wifiIpEditText)
-                        msSetupForSendModel.sbnt = getIpAddressListFromEditText(wifiMaskEditText)
-                        msSetupForSendModel.gtw = getIpAddressListFromEditText(wifiGatewayEditText)
+                        msSetupForSendModel.ip =
+                            getIpAddressListFromEditText(wifiIpEditText)
+                        msSetupForSendModel.sbnt =
+                            getIpAddressListFromEditText(wifiMaskEditText)
+                        msSetupForSendModel.gtw =
+                            getIpAddressListFromEditText(wifiGatewayEditText)
                     } else {
-                        showErrorAlertDialog()
+                        showAlertDialogFragment(AlertType.ERROR)
                         return
                     }
                 }
 
-                showConfirmAlertDialog(msSetupForSendModel)
+                showAlertDialogFragment(AlertType.CONFIRM)
             }
         }
     }
 
-    private fun showConfirmAlertDialog(msSetupForSendModel: MsSetupForSendModel) {
-        AlertDialog.Builder(requireContext())
-            .setMessage("Сохранить настройки")
-            .setPositiveButton("СОХРАНИТЬ") { dialog, _ ->
-                viewModel.send(msSetupForSendModel)
-                dialog.dismiss()
-            }
-            .setNegativeButton("ОТМЕНА") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
+    private fun showAlertDialogFragment(alertType: AlertType) {
+        MyDialogFragment.show(childFragmentManager, alertType)
     }
 
-    private fun showErrorAlertDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Ошибка")
-            .setMessage("Проверьте правильность ввода параметров")
-            .setNegativeButton("ОК") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
+    private fun setupAlertDialogFragmentListener() {
+        MyDialogFragment.setupListener(childFragmentManager, viewLifecycleOwner) {
+            viewModel.send()
+        }
     }
 
     private fun getIpAddressListFromEditText(editText: TextInputEditText): List<String> =
@@ -163,7 +161,7 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
         }
     }
 
-    private fun updateData(){
+    private fun updateData() {
         viewModel.setEditingMode(false)
         binding.root.clearFocus()
         viewModel.getData()

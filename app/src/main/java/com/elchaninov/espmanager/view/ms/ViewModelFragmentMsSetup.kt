@@ -30,7 +30,7 @@ open class ViewModelFragmentMsSetup(
     private val _liveDataIsEditingMode: MutableLiveData<Boolean> = MutableLiveData(false)
     val liveDataIsEditingMode: LiveData<Boolean> get() = _liveDataIsEditingMode
 
-    fun getLoadedMsModel(): MsModel? = (liveData.value as? AppState.Success)?.msModel
+    var msSetupForSendModel: MsSetupForSendModel? = null
 
     init {
         deviceModel.ip?.let { ip ->
@@ -41,7 +41,15 @@ open class ViewModelFragmentMsSetup(
         }
     }
 
-    fun setEditingMode(value: Boolean){
+    private fun getLoadedMsModel(): MsModel? = (liveData.value as? AppState.Success)?.msModel
+
+    fun createMsSetupForSendModel() {
+        (getLoadedMsModel() as? MsSetupModel)?.let { msModel ->
+            msSetupForSendModel = msModel.toMsSetupForSendModel()
+        }
+    }
+
+    fun setEditingMode(value: Boolean) {
         _liveDataIsEditingMode.value = value
     }
 
@@ -57,7 +65,7 @@ open class ViewModelFragmentMsSetup(
         }
     }
 
-    fun send(msSetupForSendModel: MsSetupForSendModel) {
+    fun send() {
         webSocketRepo?.let {
             _liveData.postValue(AppState.Loading)
             viewModelScope.launch(Dispatchers.IO) {
