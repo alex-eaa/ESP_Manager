@@ -44,7 +44,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:hint="Адрес сервера"
-                        app:endIconMode="clear_text">
+                        app:endIconMode="clear_text"
+                        app:errorEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/mqtt_address_edit_text"
@@ -61,14 +62,15 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:hint="Номер порта"
-                        app:counterMaxLength="6"
-                        app:endIconMode="clear_text">
+                        app:endIconMode="clear_text"
+                        app:errorEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/mqtt_port_edit_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="numberDecimal"
+                            android:maxLength="5"
                             android:text="9124" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -79,7 +81,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:hint="Логин"
-                        app:endIconMode="clear_text">
+                        app:endIconMode="clear_text"
+                        app:errorEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/mqtt_login_edit_text"
@@ -96,7 +99,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:hint="Пароль"
-                        app:endIconMode="password_toggle">
+                        app:endIconMode="password_toggle"
+                        app:errorEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/mqtt_password_edit_text"
@@ -108,6 +112,30 @@
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="8dp">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_log_on_off"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Включить лог работы реле"
+                        android:textSize="18sp" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.cardview.widget.CardView>
+
         </androidx.appcompat.widget.LinearLayoutCompat>
     </ScrollView>
 
