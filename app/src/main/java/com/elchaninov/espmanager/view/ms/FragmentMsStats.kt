@@ -11,6 +11,8 @@ import com.elchaninov.espmanager.model.DeviceModel
 import com.elchaninov.espmanager.model.ms.MsMainModel
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
+import com.elchaninov.espmanager.view.AlertType
+import com.elchaninov.espmanager.view.MyDialogFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -42,6 +44,17 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
                 else -> {}
             }
         }
+
+        viewListenerInit()
+        setupAlertDialogFragmentListener()
+    }
+
+    private fun viewListenerInit(){
+        binding.buttonStatsReset.setOnClickListener {
+            msMainModel?.let {
+                showAlertDialogFragment()
+            }
+        }
     }
 
     private fun renderData() {
@@ -51,6 +64,18 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
             binding.textTotalTimeOn.text = millisToTime(it.relay.totalTimeOn)
             binding.textMaxContinuousOn.text = millisToTime(it.relay.maxContinuousOn)
             binding.textTimeESPOn.text = millisToTime(it.timeESPOn.toLong())
+        }
+    }
+
+    private fun showAlertDialogFragment() {
+        MyDialogFragment.show(childFragmentManager, AlertType.STATS_RESET)
+    }
+
+    private fun setupAlertDialogFragmentListener() {
+        MyDialogFragment.setupListener(childFragmentManager, viewLifecycleOwner) {
+            msMainModel?.let {
+                viewModel.statReset()
+            }
         }
     }
 

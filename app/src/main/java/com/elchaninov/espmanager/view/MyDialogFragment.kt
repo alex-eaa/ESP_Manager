@@ -21,18 +21,37 @@ class MyDialogFragment : AppCompatDialogFragment() {
             setFragmentResult(REQUEST_KEY, bundleOf(KEY_RESPONSE to witch))
         }
 
-        return if (alertType == AlertType.CONFIRM) {
-            AlertDialog.Builder(requireContext())
-                .setMessage("Сохранить настройки?")
-                .setPositiveButton("Да", listener)
-                .setNegativeButton("Нет", null)
-                .create()
-        } else {
-            AlertDialog.Builder(requireContext())
-                .setTitle("Ошибка")
-                .setMessage("Проверьте правильность ввода параметров.")
-                .setNegativeButton("Отмена", null)
-                .create()
+        return when (alertType) {
+            AlertType.CONFIRM -> {
+                AlertDialog.Builder(requireContext())
+                    .setMessage("Сохранить настройки?")
+                    .setPositiveButton("Да", listener)
+                    .setNegativeButton("Нет", null)
+                    .create()
+            }
+            AlertType.STATS_RESET -> {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Сброс статистики!")
+                    .setMessage("Вы подтверждаете сброс статистики? После сброса информацию невозможно будет восстановить.")
+                    .setPositiveButton("Да", listener)
+                    .setNegativeButton("Нет", null)
+                    .create()
+            }
+            AlertType.DEVICE_RESET -> {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Перезагрузка!")
+                    .setMessage("Вы хотите перезагрузить устройство?")
+                    .setPositiveButton("Да", listener)
+                    .setNegativeButton("Нет", null)
+                    .create()
+            }
+            else -> {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Ошибка")
+                    .setMessage("Проверьте правильность ввода параметров.")
+                    .setNegativeButton("Отмена", null)
+                    .create()
+            }
         }
     }
 
@@ -64,5 +83,5 @@ class MyDialogFragment : AppCompatDialogFragment() {
 }
 
 enum class AlertType {
-    CONFIRM, ERROR
+    CONFIRM, ERROR, STATS_RESET, DEVICE_RESET
 }

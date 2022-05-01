@@ -72,6 +72,14 @@ open class ViewModelFragmentMsMain(
         }
     }
 
+    fun statReset(){
+        toLog("statReset()")
+        viewModelScope.launch(Dispatchers.IO) {
+            _liveData.postValue(AppState.Loading)
+            webSocketFlowRepoImpl.sendToWebSocket(ESP_ACTION_STATS_RESET)
+        }
+    }
+
     private fun deserializationJson(json: String): MsModel {
         return gson.fromJson(json, MsMainModel::class.java)
     }
@@ -94,5 +102,6 @@ open class ViewModelFragmentMsMain(
 
     companion object {
         const val PAGE = "index.htm"
+        const val ESP_ACTION_STATS_RESET = "RESETSTAT"
     }
 }
