@@ -4,7 +4,10 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
-import com.elchaninov.espmanager.model.ms.*
+import com.elchaninov.espmanager.model.ms.MsModel
+import com.elchaninov.espmanager.model.ms.MsSetupForSendModel
+import com.elchaninov.espmanager.model.ms.MsSetupModel
+import com.elchaninov.espmanager.model.ms.toMsSetupForSendModel
 import com.elchaninov.espmanager.model.repo.webSocket.WebSocketRepo
 import com.elchaninov.espmanager.model.repo.webSocket.WebSocketRepoImpl
 import com.google.gson.Gson
@@ -12,10 +15,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.Request
 
-
 open class ViewModelFragmentMsSetup(
     private val deviceModel: DeviceModel,
-    private val msPage: MsPage,
     private val handle: SavedStateHandle
 ) : ViewModel() {
 
@@ -30,12 +31,12 @@ open class ViewModelFragmentMsSetup(
 
     var msSetupForSendModel: MsSetupForSendModel? = null
 
-    private fun saveInStateHandle(){
-        handle.set ("msSetupForSendModel", msSetupForSendModel)
+    private fun saveInStateHandle() {
+        handle.set("msSetupForSendModel", msSetupForSendModel)
         handle.set("isEditingMode", _liveDataIsEditingMode.value)
     }
 
-    private fun restoreFromStateHandle(){
+    private fun restoreFromStateHandle() {
         msSetupForSendModel = handle.get<MsSetupForSendModel>("msSetupForSendModel")
         _liveDataIsEditingMode.value = handle.get<Boolean>("isEditingMode")
     }
@@ -43,7 +44,7 @@ open class ViewModelFragmentMsSetup(
     init {
         deviceModel.ip?.let { ip ->
             val request =
-                Request.Builder().url("ws://$ip:${deviceModel.port}/${msPage.path}").build()
+                Request.Builder().url("ws://$ip:${deviceModel.port}/$PAGE").build()
             webSocketRepo = WebSocketRepoImpl(request)
             toLog("INIT, WebSocket request=$request")
         }
@@ -88,14 +89,7 @@ open class ViewModelFragmentMsSetup(
     private fun getLoadedMsModel(): MsModel? = (liveData.value as? AppState.Success)?.msModel
 
     private fun deserializationJson(json: String): MsModel {
-        return when (msPage) {
-            MsPage.INDEX -> {
-                gson.fromJson(json, MsMainModel::class.java)
-            }
-            MsPage.SETUP -> {
-                gson.fromJson(json, MsSetupModel::class.java)
-            }
-        }
+        return gson.fromJson(json, MsSetupModel::class.java)
     }
 
     override fun onCleared() {
@@ -108,5 +102,9 @@ open class ViewModelFragmentMsSetup(
         val className = this.javaClass.simpleName
         val hashCode = this.hashCode()
         Log.d("qqq", "$className:$hashCode: $message")
+    }
+
+    companion object {
+        const val PAGE = "setup.htm"
     }
 }

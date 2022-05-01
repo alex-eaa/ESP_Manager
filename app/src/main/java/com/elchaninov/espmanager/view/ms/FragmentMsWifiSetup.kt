@@ -14,7 +14,6 @@ import com.elchaninov.espmanager.databinding.FragmentMsWifiSetupBinding
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
 import com.elchaninov.espmanager.model.ms.MsModel
-import com.elchaninov.espmanager.model.ms.MsPage
 import com.elchaninov.espmanager.model.ms.MsSetupModel
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
@@ -29,12 +28,7 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
     private var _binding: FragmentMsWifiSetupBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: ViewModelFragmentMsSetup by stateViewModel {
-        parametersOf(
-            deviceModel,
-            MsPage.SETUP
-        )
-    }
+    private val viewModel: ViewModelFragmentMsSetup by stateViewModel { parametersOf(deviceModel) }
 
     private var deviceModel: DeviceModel? = null
 

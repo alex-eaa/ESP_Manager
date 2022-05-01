@@ -7,7 +7,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.elchaninov.espmanager.R
@@ -15,7 +14,6 @@ import com.elchaninov.espmanager.databinding.FragmentMsMqttSetupBinding
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
 import com.elchaninov.espmanager.model.ms.MsModel
-import com.elchaninov.espmanager.model.ms.MsPage
 import com.elchaninov.espmanager.model.ms.MsSetupModel
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
@@ -29,12 +27,7 @@ class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
     private var _binding: FragmentMsMqttSetupBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: ViewModelFragmentMsSetup by stateViewModel {
-        parametersOf(
-            deviceModel,
-            MsPage.SETUP
-        )
-    }
+    private val viewModel: ViewModelFragmentMsSetup by stateViewModel { parametersOf(deviceModel) }
 
     private var deviceModel: DeviceModel? = null
 

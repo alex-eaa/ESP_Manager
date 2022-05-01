@@ -23,25 +23,18 @@ import com.elchaninov.espmanager.databinding.FragmentMsControlBinding
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
 import com.elchaninov.espmanager.model.ms.MsMainModel
-import com.elchaninov.espmanager.model.ms.MsPage
 import com.elchaninov.espmanager.model.ms.toMsMainForSendModel
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-
 class FragmentMsMain : Fragment(R.layout.fragment_ms_control) {
 
     private var _binding: FragmentMsControlBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: ViewModelFragmentMsMain by viewModel {
-        parametersOf(
-            deviceModel,
-            MsPage.INDEX
-        )
-    }
+    private val viewModel: ViewModelFragmentMsMain by viewModel { parametersOf(deviceModel) }
 
     private lateinit var deviceModel: DeviceModel
     private val args: FragmentMsMainArgs by navArgs()
@@ -55,7 +48,7 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_control) {
 
         deviceModel = args.device
 
-        viewModel.liveData.observe(viewLifecycleOwner) {appState ->
+        viewModel.liveData.observe(viewLifecycleOwner) { appState ->
             when (appState) {
                 is AppState.Loading -> {
                     binding.includeProgress.progressBar.show()
@@ -71,9 +64,6 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_control) {
         }
 
         viewListenerInit()
-
-//        binding.buttonStart.setOnClickListener { viewModel.startFlow() }
-        binding.buttonStop.setOnClickListener { viewModel.stopFlow() }
     }
 
     private fun renderData() {

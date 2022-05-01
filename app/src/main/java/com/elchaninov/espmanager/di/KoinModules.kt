@@ -18,11 +18,11 @@ val application = module {
     viewModel { ViewModelFragmentMain(get()) }
 
     viewModel { parameters ->
-        ViewModelFragmentMsSetup(deviceModel = parameters.get(), msPage = parameters.get(), get())
+        ViewModelFragmentMsSetup(deviceModel = parameters.get(), get())
     }
 
     viewModel { parameters ->
-        ViewModelFragmentMsMain(deviceModel = parameters.get(), msPage = parameters.get())
+        ViewModelFragmentMsMain(deviceModel = parameters.get())
     }
 }
 

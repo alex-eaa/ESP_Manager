@@ -7,20 +7,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
-import com.elchaninov.espmanager.model.ms.*
+import com.elchaninov.espmanager.model.ms.MsMainModel
+import com.elchaninov.espmanager.model.ms.MsModel
+import com.elchaninov.espmanager.model.ms.MsModelForSend
 import com.elchaninov.espmanager.model.repo.webSocket.WebSocketFlowRepoImpl
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import okhttp3.Request
 
-
 open class ViewModelFragmentMsMain(
     private val deviceModel: DeviceModel,
-    private val msPage: MsPage
 ) : ViewModel() {
 
     private val gson = Gson()
@@ -33,7 +35,7 @@ open class ViewModelFragmentMsMain(
     init {
         deviceModel.ip?.let { ip ->
             val request =
-                Request.Builder().url("ws://$ip:${deviceModel.port}/${msPage.path}").build()
+                Request.Builder().url("ws://$ip:${deviceModel.port}/$PAGE").build()
             webSocketFlowRepoImpl = WebSocketFlowRepoImpl(request)
             toLog("INIT, WebSocket request=$request")
         }
@@ -71,14 +73,7 @@ open class ViewModelFragmentMsMain(
     }
 
     private fun deserializationJson(json: String): MsModel {
-        return when (msPage) {
-            MsPage.INDEX -> {
-                gson.fromJson(json, MsMainModel::class.java)
-            }
-            MsPage.SETUP -> {
-                gson.fromJson(json, MsSetupModel::class.java)
-            }
-        }
+        return gson.fromJson(json, MsMainModel::class.java)
     }
 
     override fun onCleared() {
@@ -95,5 +90,9 @@ open class ViewModelFragmentMsMain(
         val className = this.javaClass.simpleName
         val hashCode = this.hashCode()
         Log.d("qqq", "$className:$hashCode: $message")
+    }
+
+    companion object {
+        const val PAGE = "index.htm"
     }
 }

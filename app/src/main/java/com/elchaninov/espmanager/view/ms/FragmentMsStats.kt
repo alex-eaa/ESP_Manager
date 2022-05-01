@@ -9,7 +9,6 @@ import com.elchaninov.espmanager.databinding.FragmentMsStatsBinding
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
 import com.elchaninov.espmanager.model.ms.MsMainModel
-import com.elchaninov.espmanager.model.ms.MsPage
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -20,12 +19,7 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
     private var _binding: FragmentMsStatsBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: ViewModelFragmentMsMain by viewModel {
-        parametersOf(
-            deviceModel,
-            MsPage.INDEX
-        )
-    }
+    private val viewModel: ViewModelFragmentMsMain by viewModel { parametersOf(deviceModel) }
 
     private var deviceModel: DeviceModel? = null
     private var msMainModel: MsMainModel? = null
