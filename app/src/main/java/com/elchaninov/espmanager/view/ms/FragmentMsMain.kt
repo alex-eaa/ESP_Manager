@@ -19,7 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navOptions
 import com.elchaninov.espmanager.R
-import com.elchaninov.espmanager.databinding.FragmentMsControlBinding
+import com.elchaninov.espmanager.databinding.FragmentMsMainBinding
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
 import com.elchaninov.espmanager.model.ms.MsMainModel
@@ -29,9 +29,9 @@ import com.elchaninov.espmanager.utils.show
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class FragmentMsMain : Fragment(R.layout.fragment_ms_control) {
+class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
 
-    private var _binding: FragmentMsControlBinding? = null
+    private var _binding: FragmentMsMainBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: ViewModelFragmentMsMain by viewModel { parametersOf(deviceModel) }
@@ -43,7 +43,7 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_control) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentMsControlBinding.bind(view)
+        _binding = FragmentMsMainBinding.bind(view)
         setHasOptionsMenu(true)
 
         deviceModel = args.device

@@ -220,20 +220,6 @@
                 android:gravity="end"
                 tools:text="000.000.000.000" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_start"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="start" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_stop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="stop" />
-
         </androidx.appcompat.widget.LinearLayoutCompat>
     </ScrollView>
 

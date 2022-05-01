@@ -9,7 +9,7 @@
         android:id="@+id/fragmentMsControl"
         android:name="com.elchaninov.espmanager.view.ms.FragmentMsMain"
         android:label="Контроллер освещения"
-        tools:layout="@layout/fragment_ms_control">
+        tools:layout="@layout/fragment_ms_main">
         <argument
             android:name="device"
             app:argType="com.elchaninov.espmanager.model.DeviceModel" />
