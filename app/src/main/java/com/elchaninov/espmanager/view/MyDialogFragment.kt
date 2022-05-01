@@ -37,14 +37,6 @@ class MyDialogFragment : AppCompatDialogFragment() {
                     .setNegativeButton("Нет", null)
                     .create()
             }
-            AlertType.DEVICE_RESET -> {
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Перезагрузка!")
-                    .setMessage("Вы хотите перезагрузить устройство?")
-                    .setPositiveButton("Да", listener)
-                    .setNegativeButton("Нет", null)
-                    .create()
-            }
             else -> {
                 AlertDialog.Builder(requireContext())
                     .setTitle("Ошибка")

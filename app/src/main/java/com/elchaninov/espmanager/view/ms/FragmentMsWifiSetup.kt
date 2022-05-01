@@ -18,6 +18,7 @@ import com.elchaninov.espmanager.model.ms.MsSetupModel
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
 import com.elchaninov.espmanager.view.AlertType
+import com.elchaninov.espmanager.view.DeviceResetDialogFragment
 import com.elchaninov.espmanager.view.MyDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
@@ -42,6 +43,7 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
         subscribeLiveData()
         switchesWifiModeSListenerInit()
         editTextListenerInit()
+        buttonListenerInit()
 
         if (savedInstanceState == null) {
             updateData()
@@ -122,7 +124,13 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
 
     private fun setupAlertDialogFragmentListener() {
         MyDialogFragment.setupListener(childFragmentManager, viewLifecycleOwner) {
+            viewModel.setEditingMode(false)
+            binding.root.clearFocus()
             viewModel.send()
+        }
+
+        DeviceResetDialogFragment.setupListener(childFragmentManager, viewLifecycleOwner) {
+            viewModel.deviceReset()
         }
     }
 
@@ -159,6 +167,12 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
         viewModel.setEditingMode(false)
         binding.root.clearFocus()
         viewModel.getData()
+    }
+
+    private fun buttonListenerInit() {
+        binding.buttonDeviceReset.setOnClickListener {
+            DeviceResetDialogFragment.show(childFragmentManager)
+        }
     }
 
     private fun switchesWifiModeSListenerInit() {

@@ -38,7 +38,9 @@ open class ViewModelFragmentMsSetup(
 
     private fun restoreFromStateHandle() {
         msSetupForSendModel = handle.get<MsSetupForSendModel>("msSetupForSendModel")
-        _liveDataIsEditingMode.value = handle.get<Boolean>("isEditingMode")
+        handle.get<Boolean>("isEditingMode")?.let {
+            _liveDataIsEditingMode.value = it
+        }
     }
 
     init {
@@ -86,6 +88,14 @@ open class ViewModelFragmentMsSetup(
         }
     }
 
+    fun deviceReset(){
+        webSocketRepo?.let {
+            viewModelScope.launch(Dispatchers.IO) {
+                it.send(ESP_ACTION_DEVICE_RESET)
+            }
+        }
+    }
+
     private fun getLoadedMsModel(): MsModel? = (liveData.value as? AppState.Success)?.msModel
 
     private fun deserializationJson(json: String): MsModel {
@@ -106,5 +116,6 @@ open class ViewModelFragmentMsSetup(
 
     companion object {
         const val PAGE = "setup.htm"
+        const val ESP_ACTION_DEVICE_RESET = "RESET"
     }
 }

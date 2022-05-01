@@ -18,6 +18,7 @@ import com.elchaninov.espmanager.model.ms.MsSetupModel
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
 import com.elchaninov.espmanager.view.AlertType
+import com.elchaninov.espmanager.view.DeviceResetDialogFragment
 import com.elchaninov.espmanager.view.MyDialogFragment
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import org.koin.core.parameter.parametersOf
@@ -42,6 +43,7 @@ class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
         subscribeLiveData()
         switchesWifiModeSListenerInit()
         editTextListenerInit()
+        buttonListenerInit()
 
         if (savedInstanceState == null) {
             updateData()
@@ -125,7 +127,19 @@ class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
 
     private fun setupAlertDialogFragmentListener() {
         MyDialogFragment.setupListener(childFragmentManager, viewLifecycleOwner) {
+            viewModel.setEditingMode(false)
+            binding.root.clearFocus()
             viewModel.send()
+        }
+
+        DeviceResetDialogFragment.setupListener(childFragmentManager, viewLifecycleOwner) {
+            viewModel.deviceReset()
+        }
+    }
+
+    private fun buttonListenerInit() {
+        binding.buttonDeviceReset.setOnClickListener {
+            DeviceResetDialogFragment.show(childFragmentManager)
         }
     }
 
