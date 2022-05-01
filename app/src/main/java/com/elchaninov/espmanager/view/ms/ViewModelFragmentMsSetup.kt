@@ -1,10 +1,7 @@
 package com.elchaninov.espmanager.view.ms
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
 import com.elchaninov.espmanager.model.ms.*
@@ -18,19 +15,30 @@ import okhttp3.Request
 
 open class ViewModelFragmentMsSetup(
     private val deviceModel: DeviceModel,
-    private val msPage: MsPage
+    private val msPage: MsPage,
+    private val handle: SavedStateHandle
 ) : ViewModel() {
 
     private val gson = Gson()
     private var webSocketRepo: WebSocketRepo? = null
 
-    private val _liveData: MutableLiveData<AppState> = MutableLiveData(AppState.Loading)
+    private val _liveData: MutableLiveData<AppState> = MutableLiveData()
     val liveData: LiveData<AppState> get() = _liveData
 
     private val _liveDataIsEditingMode: MutableLiveData<Boolean> = MutableLiveData(false)
     val liveDataIsEditingMode: LiveData<Boolean> get() = _liveDataIsEditingMode
 
     var msSetupForSendModel: MsSetupForSendModel? = null
+
+    private fun saveInStateHandle(){
+        handle.set ("msSetupForSendModel", msSetupForSendModel)
+        handle.set("isEditingMode", _liveDataIsEditingMode.value)
+    }
+
+    private fun restoreFromStateHandle(){
+        msSetupForSendModel = handle.get<MsSetupForSendModel>("msSetupForSendModel")
+        _liveDataIsEditingMode.value = handle.get<Boolean>("isEditingMode")
+    }
 
     init {
         deviceModel.ip?.let { ip ->
@@ -39,18 +47,20 @@ open class ViewModelFragmentMsSetup(
             webSocketRepo = WebSocketRepoImpl(request)
             toLog("INIT, WebSocket request=$request")
         }
-    }
 
-    private fun getLoadedMsModel(): MsModel? = (liveData.value as? AppState.Success)?.msModel
+        restoreFromStateHandle()
+    }
 
     fun createMsSetupForSendModel() {
         (getLoadedMsModel() as? MsSetupModel)?.let { msModel ->
             msSetupForSendModel = msModel.toMsSetupForSendModel()
+            saveInStateHandle()
         }
     }
 
     fun setEditingMode(value: Boolean) {
         _liveDataIsEditingMode.value = value
+        saveInStateHandle()
     }
 
     fun getData() {
@@ -74,6 +84,8 @@ open class ViewModelFragmentMsSetup(
             }
         }
     }
+
+    private fun getLoadedMsModel(): MsModel? = (liveData.value as? AppState.Success)?.msModel
 
     private fun deserializationJson(json: String): MsModel {
         return when (msPage) {

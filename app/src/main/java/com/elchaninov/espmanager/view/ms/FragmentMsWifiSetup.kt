@@ -21,7 +21,7 @@ import com.elchaninov.espmanager.utils.show
 import com.elchaninov.espmanager.view.AlertType
 import com.elchaninov.espmanager.view.MyDialogFragment
 import com.google.android.material.textfield.TextInputEditText
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import org.koin.core.parameter.parametersOf
 
 class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
@@ -29,7 +29,7 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
     private var _binding: FragmentMsWifiSetupBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: ViewModelFragmentMsSetup by viewModel {
+    private val viewModel: ViewModelFragmentMsSetup by stateViewModel {
         parametersOf(
             deviceModel,
             MsPage.SETUP

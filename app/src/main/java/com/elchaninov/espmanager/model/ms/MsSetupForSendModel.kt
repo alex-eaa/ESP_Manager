@@ -1,6 +1,9 @@
 package com.elchaninov.espmanager.model.ms
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class MsSetupForSendModel(
     val page: String = "setup",
 
@@ -22,7 +25,7 @@ data class MsSetupForSendModel(
     var mqtt_server_port: String,
     var mqttUser: String,
     var mqttPass: String,
-) : MsModelForSend
+) : MsModelForSend, Parcelable
 
 //WS TO Server:
 //{
