@@ -18,6 +18,7 @@ import com.elchaninov.espmanager.model.ms.MsModel
 import com.elchaninov.espmanager.model.ms.MsSetupModel
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
+import com.elchaninov.espmanager.utils.showErrorSnackBar
 import com.elchaninov.espmanager.view.AlertType
 import com.elchaninov.espmanager.view.DeviceResetDialogFragment
 import com.elchaninov.espmanager.view.MyDialogFragment
@@ -64,7 +65,10 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
                     binding.includeProgress.progressBar.hide()
                     renderData(appState.msModel)
                 }
-                else -> {}
+                is AppState.Error -> {
+                    binding.includeProgress.progressBar.hide()
+                    binding.root.showErrorSnackBar(appState.error.message.toString())
+                }
             }
         }
     }

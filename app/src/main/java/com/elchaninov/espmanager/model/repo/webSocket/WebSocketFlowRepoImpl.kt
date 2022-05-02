@@ -23,7 +23,7 @@ class WebSocketFlowRepoImpl(private val request: Request) : WebSocketFlowRepo {
             return true
         }
         toLog("Неудалось отправить сообщение, mWebSocket=$mWebSocket")
-        return false
+        throw Exception("Отсутствует связь с устройством")
     }
 
     override suspend fun getFlow(): Flow<String> = callbackFlow {

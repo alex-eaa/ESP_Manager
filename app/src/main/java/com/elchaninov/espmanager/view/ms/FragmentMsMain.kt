@@ -46,9 +46,12 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMsMainBinding.bind(view)
         setHasOptionsMenu(true)
-
         deviceModel = args.device
+        subscribeLiveData()
+        viewListenerInit()
+    }
 
+    private fun subscribeLiveData() {
         viewModel.liveData.observe(viewLifecycleOwner) { appState ->
             when (appState) {
                 is AppState.Loading -> binding.includeProgress.progressBar.show("Соединение...")
@@ -61,12 +64,11 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
                     renderData()
                 }
                 is AppState.Error -> {
+                    binding.includeProgress.progressBar.hide()
                     binding.root.showErrorSnackBar(appState.error.message.toString())
                 }
             }
         }
-
-        viewListenerInit()
     }
 
     private fun renderData() {

@@ -49,10 +49,6 @@ open class ViewModelFragmentMsMain(
                 toLog("startFlow() Flow started")
                 webSocketFlowRepoImpl.getFlow()
                     .onStart { _liveData.postValue(AppState.Loading) }
-                    .catch { e ->
-                        toLog("ERROR in Flow")
-                        _liveData.postValue(AppState.Error(e))
-                    }
                     .collect { _liveData.postValue(AppState.Success(deserializationJson(it))) }
             }
         }
@@ -67,15 +63,15 @@ open class ViewModelFragmentMsMain(
     fun send(msModelForSend: MsModelForSend) {
         toLog("send")
         _liveData.value = AppState.Saving
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO + handler) {
             webSocketFlowRepoImpl.sendToWebSocket(gson.toJson(msModelForSend))
         }
     }
 
-    fun statReset(){
+    fun statReset() {
         toLog("statReset()")
         _liveData.value = AppState.Saving
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO + handler) {
             webSocketFlowRepoImpl.sendToWebSocket(ESP_ACTION_STATS_RESET)
         }
     }
@@ -90,8 +86,9 @@ open class ViewModelFragmentMsMain(
         super.onCleared()
     }
 
-    private val handler = CoroutineExceptionHandler { context, exception ->
-        println("ERROR in Flow2. Caught $exception")
+    private val handler = CoroutineExceptionHandler { _, exception ->
+        toLog("ERROR in CoroutineExceptionHandler: $exception")
+        _liveData.postValue(AppState.Error(exception))
     }
 
     private fun toLog(message: String) {

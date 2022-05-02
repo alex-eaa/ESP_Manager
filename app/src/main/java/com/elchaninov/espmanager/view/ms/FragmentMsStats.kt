@@ -30,9 +30,13 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMsStatsBinding.bind(view)
-
         deviceModel = requireArguments().getParcelable(FragmentMsMain.ARG_DEVICE)
+        subscribeLiveData()
+        viewListenerInit()
+        setupAlertDialogFragmentListener()
+    }
 
+    private fun subscribeLiveData() {
         viewModel.liveData.observe(viewLifecycleOwner) { appState ->
             when (appState) {
                 is AppState.Loading -> binding.includeProgress.progressBar.show("Соединение...")
@@ -45,19 +49,9 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
                     renderData()
                 }
                 is AppState.Error -> {
+                    binding.includeProgress.progressBar.hide()
                     binding.root.showErrorSnackBar(appState.error.message.toString())
                 }
-            }
-        }
-
-        viewListenerInit()
-        setupAlertDialogFragmentListener()
-    }
-
-    private fun viewListenerInit(){
-        binding.buttonStatsReset.setOnClickListener {
-            msMainModel?.let {
-                showAlertDialogFragment()
             }
         }
     }
@@ -69,6 +63,14 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
             binding.textTotalTimeOn.text = millisToTime(it.relay.totalTimeOn)
             binding.textMaxContinuousOn.text = millisToTime(it.relay.maxContinuousOn)
             binding.textTimeESPOn.text = millisToTime(it.timeESPOn.toLong())
+        }
+    }
+
+    private fun viewListenerInit(){
+        binding.buttonStatsReset.setOnClickListener {
+            msMainModel?.let {
+                showAlertDialogFragment()
+            }
         }
     }
 
