@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.elchaninov.espmanager.R
 import com.elchaninov.espmanager.databinding.FragmentMsMqttSetupBinding
 import com.elchaninov.espmanager.model.AppState
@@ -133,6 +134,10 @@ class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
         }
 
         DeviceResetDialogFragment.setupListener(childFragmentManager, viewLifecycleOwner) {
+            viewModel.liveDataResetResult.observe(viewLifecycleOwner) {
+                if (it == true)
+                    findNavController().popBackStack(R.id.fragmentMain, false)
+            }
             viewModel.deviceReset()
         }
     }

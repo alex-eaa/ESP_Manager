@@ -10,7 +10,7 @@ class WebSocketRepoImpl(private val request: Request) : WebSocketRepo {
     private var mWebSocket: WebSocket? = null
     private var receivedMessage: String? = null
 
-    override suspend fun send(text: String) {
+    override suspend fun send(text: String, disconnectAfter: Boolean): Boolean {
         toLog("send()")
         connectWebSocket()
         mWebSocket?.let {
@@ -19,8 +19,10 @@ class WebSocketRepoImpl(private val request: Request) : WebSocketRepo {
                 delay(20L)
             }
             toLog("send() Сообщение отправлено: $text")
-            disconnectWebSocket()
+            if (disconnectAfter) disconnectWebSocket()
+            return true
         }
+        return false
     }
 
     override suspend fun get(): String? {

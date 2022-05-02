@@ -12,6 +12,7 @@ import com.elchaninov.espmanager.model.repo.webSocket.WebSocketRepo
 import com.elchaninov.espmanager.model.repo.webSocket.WebSocketRepoImpl
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.Request
 
@@ -28,6 +29,9 @@ open class ViewModelFragmentMsSetup(
 
     private val _liveDataIsEditingMode: MutableLiveData<Boolean> = MutableLiveData(false)
     val liveDataIsEditingMode: LiveData<Boolean> get() = _liveDataIsEditingMode
+
+    private val _liveDataResetResult: MutableLiveData<Boolean> = MutableLiveData(false)
+    val liveDataResetResult: LiveData<Boolean> get() = _liveDataResetResult
 
     var msSetupForSendModel: MsSetupForSendModel? = null
 
@@ -88,10 +92,12 @@ open class ViewModelFragmentMsSetup(
         }
     }
 
-    fun deviceReset(){
+    fun deviceReset() {
         webSocketRepo?.let {
             viewModelScope.launch(Dispatchers.IO) {
-                it.send(ESP_ACTION_DEVICE_RESET)
+                val resetResult = it.send(ESP_ACTION_DEVICE_RESET, disconnectAfter = false)
+                delay(3000L)
+                _liveDataResetResult.postValue(resetResult)
             }
         }
     }
