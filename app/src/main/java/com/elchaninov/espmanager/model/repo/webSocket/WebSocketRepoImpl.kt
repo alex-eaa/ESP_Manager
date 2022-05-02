@@ -1,95 +1,92 @@
 package com.elchaninov.espmanager.model.repo.webSocket
 
 import android.util.Log
-import kotlinx.coroutines.delay
 import okhttp3.*
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class WebSocketRepoImpl(private val request: Request) : WebSocketRepo {
 
     private val httpClient = OkHttpClient()
-    private var mWebSocket: WebSocket? = null
-    private var receivedMessage: String? = null
 
-    override suspend fun send(text: String, disconnectAfter: Boolean): Boolean {
+    override suspend fun sendReset() {
+        toLog("sendReset()")
+
+        val webSocketListener = object : WebSocketListener() {
+            override fun onOpen(webSocket: WebSocket, response: Response) {
+                super.onOpen(webSocket, response)
+                toLog("Соединение с WebSocket для sendReset() установлено")
+                webSocket.send("RESET")
+                webSocket.close(1000, null)
+            }
+        }
+
+        httpClient.newWebSocket(request, webSocketListener)
+    }
+
+
+    override suspend fun send(message: String): Boolean = suspendCoroutine { continuation ->
         toLog("send()")
-        connectWebSocket()
-        mWebSocket?.let {
-            it.send(text)
-            while (it.queueSize() > 0) {
-                delay(20L)
+
+        val webSocketListener = object : WebSocketListener() {
+            override fun onOpen(webSocket: WebSocket, response: Response) {
+                super.onOpen(webSocket, response)
+                toLog("Соединение с WebSocket для send() установлено")
+                webSocket.send(message)
+                webSocket.close(1000, null)
             }
-            toLog("send() Сообщение отправлено: $text")
-            if (disconnectAfter) disconnectWebSocket()
-            return true
+
+            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+                super.onClosed(webSocket, code, reason)
+                toLog("Соединение с WebSocket закрыто")
+                continuation.resume(true)
+            }
+
+            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+                super.onFailure(webSocket, t, response)
+                toLog("Ошибка: ${t.message}")
+                webSocket.close(1000, null)
+                continuation.resumeWithException(t)
+            }
         }
-        return false
+
+        httpClient.newWebSocket(request, webSocketListener)
     }
 
-    override suspend fun get(): String? {
+    override suspend fun get(): String? = suspendCoroutine { continuation ->
         toLog("get()")
-        receivedMessage = null
-        connectWebSocket()
-        while (receivedMessage == null && mWebSocket != null) {
-            delay(10L)
-        }
-        disconnectWebSocket()
-        return receivedMessage
-    }
+        var result: String? = null
 
-    private suspend fun connectWebSocket() {
-//        toLog("connectWebSocket() START")
-        if (mWebSocket == null) {
-//            toLog("connectWebSocket() connecting to WebSocket")
-            httpClient.newWebSocket(request, webSocketListener)
-            while (mWebSocket == null) {
-                delay(10L)
+        val webSocketListener = object : WebSocketListener() {
+            override fun onOpen(webSocket: WebSocket, response: Response) {
+                super.onOpen(webSocket, response)
+                toLog("Соединение с WebSocket для get() установлено")
             }
-//            toLog("connectWebSocket() CONNECTED")
-        }
-    }
 
-    private suspend fun disconnectWebSocket() {
-//        toLog("disconnectWebSocket() START")
-        if (mWebSocket != null) {
-//            toLog("disconnectWebSocket() disconnecting from WebSocket")
-            mWebSocket?.close(1000, null)
-            while (mWebSocket != null) {
-                delay(10L)
+            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+                super.onClosed(webSocket, code, reason)
+                toLog("Соединение с WebSocket закрыто")
+                continuation.resume(result)
             }
-//            toLog("disconnectWebSocket() DISCONNECTED")
+
+            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+                super.onFailure(webSocket, t, response)
+                toLog("Ошибка: ${t.message}")
+                webSocket.close(1000, null)
+                continuation.resumeWithException(t)
+            }
+
+            override fun onMessage(webSocket: WebSocket, text: String) {
+                super.onMessage(webSocket, text)
+                toLog("onMessage: $text")
+                result = text
+                webSocket.close(1000, null)
+            }
         }
+
+        httpClient.newWebSocket(request, webSocketListener)
     }
-
-
-    private val webSocketListener = object : WebSocketListener() {
-        override fun onOpen(webSocket: WebSocket, response: Response) {
-            super.onOpen(webSocket, response)
-            toLog("Соединение с WebSocket установлено")
-            mWebSocket = webSocket
-        }
-
-        override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-            super.onClosed(webSocket, code, reason)
-            toLog("Соединение с WebSocket закрыто")
-            mWebSocket = null
-        }
-
-        override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-            super.onFailure(webSocket, t, response)
-            toLog("Ошибка: ${t.message}")
-//                t.printStackTrace()
-            mWebSocket?.close(1000, null)
-            mWebSocket = null
-//                throw t
-        }
-
-        override fun onMessage(webSocket: WebSocket, text: String) {
-            super.onMessage(webSocket, text)
-            receivedMessage = text
-            toLog("onMessage: $text")
-        }
-    }
-
 
     private fun toLog(message: String) {
         val className = this.javaClass.simpleName

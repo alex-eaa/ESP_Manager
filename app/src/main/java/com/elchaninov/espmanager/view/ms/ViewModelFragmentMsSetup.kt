@@ -11,6 +11,7 @@ import com.elchaninov.espmanager.model.ms.toMsSetupForSendModel
 import com.elchaninov.espmanager.model.repo.webSocket.WebSocketRepo
 import com.elchaninov.espmanager.model.repo.webSocket.WebSocketRepoImpl
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -73,7 +74,7 @@ open class ViewModelFragmentMsSetup(
     fun getData() {
         webSocketRepo?.let {
             _liveData.postValue(AppState.Loading)
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch(Dispatchers.IO + handler) {
                 it.get()?.let { msg ->
                     toLog("get()  msg=$msg")
                     _liveData.postValue(AppState.Success(deserializationJson(msg)))
@@ -85,7 +86,7 @@ open class ViewModelFragmentMsSetup(
     fun send() {
         webSocketRepo?.let {
             _liveData.postValue(AppState.Saving)
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch(Dispatchers.IO + handler) {
                 it.send(gson.toJson(msSetupForSendModel))
                 getData()
             }
@@ -96,9 +97,9 @@ open class ViewModelFragmentMsSetup(
         webSocketRepo?.let {
             _liveData.postValue(AppState.Restarting)
             viewModelScope.launch(Dispatchers.IO) {
-                val resetResult = it.send(ESP_ACTION_DEVICE_RESET, disconnectAfter = false)
-                delay(3000L)
-                _liveDataResetResult.postValue(resetResult)
+                it.sendReset()
+                delay(4000L)
+                _liveDataResetResult.postValue(true)
             }
         }
     }
@@ -115,6 +116,11 @@ open class ViewModelFragmentMsSetup(
         super.onCleared()
     }
 
+    private val handler = CoroutineExceptionHandler { _, exception ->
+        toLog("ERROR in CoroutineExceptionHandler: $exception")
+        _liveData.postValue(AppState.Error(exception))
+    }
+
     private fun toLog(message: String) {
         val className = this.javaClass.simpleName
         val hashCode = this.hashCode()
@@ -123,6 +129,5 @@ open class ViewModelFragmentMsSetup(
 
     companion object {
         const val PAGE = "setup.htm"
-        const val ESP_ACTION_DEVICE_RESET = "RESET"
     }
 }
