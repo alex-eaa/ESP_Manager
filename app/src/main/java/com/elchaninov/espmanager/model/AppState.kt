@@ -6,4 +6,6 @@ sealed class AppState{
     data class Success(val msModel: MsModel) : AppState()
     data class Error(val error: Throwable) : AppState()
     object Loading : AppState()
+    object Restarting : AppState()
+    object Saving : AppState()
 }

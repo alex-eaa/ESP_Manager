@@ -56,7 +56,9 @@ class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
     private fun subscribeLiveData() {
         viewModel.liveData.observe(viewLifecycleOwner) { appState ->
             when (appState) {
-                is AppState.Loading -> binding.includeProgress.progressBar.show()
+                is AppState.Loading -> binding.includeProgress.progressBar.show("Соединение...")
+                is AppState.Restarting -> binding.includeProgress.progressBar.show("Перезагрузка...")
+                is AppState.Saving -> binding.includeProgress.progressBar.show("Сохранение...")
                 is AppState.Success -> {
                     binding.includeProgress.progressBar.hide()
                     renderData(appState.msModel)

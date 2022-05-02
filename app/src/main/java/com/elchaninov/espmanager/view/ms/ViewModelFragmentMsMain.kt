@@ -66,16 +66,16 @@ open class ViewModelFragmentMsMain(
 
     fun send(msModelForSend: MsModelForSend) {
         toLog("send")
+        _liveData.value = AppState.Saving
         viewModelScope.launch(Dispatchers.IO) {
-            _liveData.postValue(AppState.Loading)
             webSocketFlowRepoImpl.sendToWebSocket(gson.toJson(msModelForSend))
         }
     }
 
     fun statReset(){
         toLog("statReset()")
+        _liveData.value = AppState.Saving
         viewModelScope.launch(Dispatchers.IO) {
-            _liveData.postValue(AppState.Loading)
             webSocketFlowRepoImpl.sendToWebSocket(ESP_ACTION_STATS_RESET)
         }
     }

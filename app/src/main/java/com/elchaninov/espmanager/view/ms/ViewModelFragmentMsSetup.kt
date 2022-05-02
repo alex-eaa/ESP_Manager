@@ -84,7 +84,7 @@ open class ViewModelFragmentMsSetup(
 
     fun send() {
         webSocketRepo?.let {
-            _liveData.postValue(AppState.Loading)
+            _liveData.postValue(AppState.Saving)
             viewModelScope.launch(Dispatchers.IO) {
                 it.send(gson.toJson(msSetupForSendModel))
                 getData()
@@ -94,6 +94,7 @@ open class ViewModelFragmentMsSetup(
 
     fun deviceReset() {
         webSocketRepo?.let {
+            _liveData.postValue(AppState.Restarting)
             viewModelScope.launch(Dispatchers.IO) {
                 val resetResult = it.send(ESP_ACTION_DEVICE_RESET, disconnectAfter = false)
                 delay(3000L)
