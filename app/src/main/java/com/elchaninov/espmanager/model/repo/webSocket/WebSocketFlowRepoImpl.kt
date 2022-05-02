@@ -44,10 +44,9 @@ class WebSocketFlowRepoImpl(private val request: Request) : WebSocketFlowRepo {
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 super.onFailure(webSocket, t, response)
                 toLog("Ошибка: ${t.message}")
-//                t.printStackTrace()
                 mWebSocket?.close(1000, null)
                 mWebSocket = null
-//                throw t
+                close(t)
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {

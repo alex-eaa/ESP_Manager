@@ -26,6 +26,7 @@ import com.elchaninov.espmanager.model.ms.MsMainModel
 import com.elchaninov.espmanager.model.ms.toMsMainForSendModel
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
+import com.elchaninov.espmanager.utils.showErrorSnackBar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -59,7 +60,9 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
                     msMainModel = appState.msModel as MsMainModel
                     renderData()
                 }
-                else -> {}
+                is AppState.Error -> {
+                    binding.root.showErrorSnackBar(appState.error.message.toString())
+                }
             }
         }
 

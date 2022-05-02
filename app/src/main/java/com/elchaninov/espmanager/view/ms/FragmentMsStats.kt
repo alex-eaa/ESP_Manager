@@ -11,6 +11,7 @@ import com.elchaninov.espmanager.model.DeviceModel
 import com.elchaninov.espmanager.model.ms.MsMainModel
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
+import com.elchaninov.espmanager.utils.showErrorSnackBar
 import com.elchaninov.espmanager.view.AlertType
 import com.elchaninov.espmanager.view.MyDialogFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -43,7 +44,9 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
                     msMainModel = appState.msModel as MsMainModel
                     renderData()
                 }
-                else -> {}
+                is AppState.Error -> {
+                    binding.root.showErrorSnackBar(appState.error.message.toString())
+                }
             }
         }
 
