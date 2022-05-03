@@ -43,9 +43,7 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
         deviceModel = requireArguments().getParcelable(FragmentMsMain.ARG_DEVICE)
 
         subscribeLiveData()
-        switchesWifiModeSListenerInit()
-        editTextListenerInit()
-        buttonListenerInit()
+        viewListenerInit()
 
         if (savedInstanceState == null) {
             updateData()
@@ -180,14 +178,12 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
         viewModel.getData()
     }
 
-    private fun buttonListenerInit() {
-        binding.buttonDeviceReset.setOnClickListener {
-            DeviceResetDialogFragment.show(childFragmentManager)
-        }
-    }
-
-    private fun switchesWifiModeSListenerInit() {
+    private fun viewListenerInit() {
         binding.apply {
+            buttonDeviceReset.setOnClickListener {
+                DeviceResetDialogFragment.show(childFragmentManager)
+            }
+
             wifiModeSwitch.setOnClickListener {
                 apModeSwitch.isChecked = !wifiModeSwitch.isChecked
                 updateEnabledTextFields()
@@ -204,11 +200,7 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
                 updateEnabledTextFields()
                 viewModel.setEditingMode(true)
             }
-        }
-    }
 
-    private fun editTextListenerInit() {
-        binding.apply {
             wifiSsidEditText.doOnTextChanged { text, _, _, _ ->
                 wifiSsidTextField.error = checkErrorsInSsidName(text.toString())
                 if (wifiSsidEditText.isFocused) viewModel.setEditingMode(true)

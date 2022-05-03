@@ -43,9 +43,7 @@ class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
         deviceModel = requireArguments().getParcelable(FragmentMsMain.ARG_DEVICE)
 
         subscribeLiveData()
-        switchesWifiModeSListenerInit()
-        editTextListenerInit()
-        buttonListenerInit()
+        viewListenerInit()
 
         if (savedInstanceState == null) {
             updateData()
@@ -148,14 +146,12 @@ class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
         }
     }
 
-    private fun buttonListenerInit() {
-        binding.buttonDeviceReset.setOnClickListener {
-            DeviceResetDialogFragment.show(childFragmentManager)
-        }
-    }
-
-    private fun switchesWifiModeSListenerInit() {
+    private fun viewListenerInit() {
         binding.apply {
+            buttonDeviceReset.setOnClickListener {
+                DeviceResetDialogFragment.show(childFragmentManager)
+            }
+
             switchMqttOnOff.setOnClickListener {
                 updateEnabledTextFields()
                 viewModel.setEditingMode(true)
@@ -164,11 +160,7 @@ class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
             switchLogOnOff.setOnClickListener {
                 viewModel.setEditingMode(true)
             }
-        }
-    }
 
-    private fun editTextListenerInit() {
-        binding.apply {
             mqttAddressEditText.doOnTextChanged { text, _, _, _ ->
                 mqttAddressTextField.error = checkErrorsInUrl(text.toString())
                 if (mqttAddressEditText.isFocused) viewModel.setEditingMode(true)
