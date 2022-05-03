@@ -7,15 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
-import com.elchaninov.espmanager.model.ms.MsMainModel
-import com.elchaninov.espmanager.model.ms.MsModel
-import com.elchaninov.espmanager.model.ms.MsModelForSend
+import com.elchaninov.espmanager.model.ms.*
 import com.elchaninov.espmanager.model.repo.webSocket.WebSocketFlowRepoImpl
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -68,6 +65,10 @@ open class ViewModelFragmentMsMain(
         }
     }
 
+    fun createMsModelForSend(): MsMainForSendModel? =
+        (getLoadedMsModel() as? MsMainModel)?.toMsMainForSendModel()
+
+
     fun statReset() {
         toLog("statReset()")
         _liveData.value = AppState.Saving
@@ -75,6 +76,8 @@ open class ViewModelFragmentMsMain(
             webSocketFlowRepoImpl.sendToWebSocket(ESP_ACTION_STATS_RESET)
         }
     }
+
+    private fun getLoadedMsModel(): MsModel? = (liveData.value as? AppState.Success)?.msModel
 
     private fun deserializationJson(json: String): MsModel {
         return gson.fromJson(json, MsMainModel::class.java)

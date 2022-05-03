@@ -9,11 +9,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
 import androidx.core.widget.ImageViewCompat
-import androidx.core.widget.addTextChangedListener
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -22,8 +21,7 @@ import com.elchaninov.espmanager.R
 import com.elchaninov.espmanager.databinding.FragmentMsMainBinding
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
-import com.elchaninov.espmanager.model.ms.MsMainModel
-import com.elchaninov.espmanager.model.ms.toMsMainForSendModel
+import com.elchaninov.espmanager.model.ms.*
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
 import com.elchaninov.espmanager.utils.showErrorSnackBar
@@ -40,7 +38,6 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
     private lateinit var deviceModel: DeviceModel
     private val args: FragmentMsMainArgs by navArgs()
 
-    private var msMainModel: MsMainModel? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,6 +45,7 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
         setHasOptionsMenu(true)
         deviceModel = args.device
         subscribeLiveData()
+        viewInit()
         viewListenerInit()
     }
 
@@ -59,9 +57,7 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
                 is AppState.Saving -> binding.includeProgress.progressBar.show("Сохранение...")
                 is AppState.Success -> {
                     binding.includeProgress.progressBar.hide()
-                    toLog("from liveData ${appState.msModel}")
-                    msMainModel = appState.msModel as MsMainModel
-                    renderData()
+                    renderData(appState.msModel)
                 }
                 is AppState.Error -> {
                     binding.includeProgress.progressBar.hide()
@@ -71,8 +67,8 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
         }
     }
 
-    private fun renderData() {
-        msMainModel?.let {
+    private fun renderData(msModel: MsModel) {
+        (msModel as? MsMainModel)?.let {
             toLog("renderData $it")
 
             when (it.relay.relayState) {
@@ -119,78 +115,43 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
         }
     }
 
+    private fun viewInit() {
+            binding.ipAddress.text = deviceModel.ip
+            binding.delayTextInputLayout.isEndIconVisible = false
+    }
+
     private fun viewListenerInit() {
-        binding.ipAddress.text = deviceModel.ip
-        delayTextFieldListenerInit()
-        groupOnOffLightListenerInit()
-        switchesPirListenerInit()
-    }
+        binding.apply {
+            lightOff.setOnClickListener { sendData() }
+            lightOn.setOnClickListener { sendData() }
+            lightAuto.setOnClickListener { sendData() }
+            switchPir0.setOnClickListener { sendData() }
+            switchPir1.setOnClickListener { sendData() }
+            delayTextInputLayout.setEndIconOnClickListener { sendData() }
 
-    private fun switchesPirListenerInit() {
-        binding.switchPir0.setOnClickListener { view ->
-            msMainModel?.let {
-                val switchPir0 = view as SwitchCompat
-                msMainModel = it.copy(relay = it.relay.copy(sensor0Use = switchPir0.isChecked))
-                save()
-            }
-        }
-
-        binding.switchPir1.setOnClickListener { view ->
-            msMainModel?.let {
-                val switchPir1 = view as SwitchCompat
-                msMainModel = it.copy(relay = it.relay.copy(sensor1Use = switchPir1.isChecked))
-                save()
+            delayTextField.doAfterTextChanged { editable ->
+                editable?.let { delayTextInputLayout.isEndIconVisible = it.isNotBlank() }
             }
         }
     }
 
-    private fun groupOnOffLightListenerInit() {
-        binding.lightOff.setOnClickListener {
-            msMainModel?.let {
-                msMainModel = it.copy(relay = it.relay.copy(relayMode = 0))
-                save()
-            }
-        }
-        binding.lightOn.setOnClickListener {
-            msMainModel?.let {
-                msMainModel = it.copy(relay = it.relay.copy(relayMode = 1))
-                save()
-            }
-        }
-        binding.lightAuto.setOnClickListener {
-            msMainModel?.let {
-                msMainModel = it.copy(relay = it.relay.copy(relayMode = 2))
-                save()
-            }
-        }
-    }
-
-    private fun delayTextFieldListenerInit() {
-        binding.delayTextInputLayout.isEndIconVisible = false
-
-        binding.delayTextField.addTextChangedListener(
-            afterTextChanged = { editable ->
-                editable?.let {
-                    binding.delayTextInputLayout.isEndIconVisible = it.isNotBlank()
+    private fun sendData() {
+        viewModel.createMsModelForSend()?.let { msMainForSendModel ->
+            binding.apply {
+                when {
+                    lightOff.isChecked -> msMainForSendModel.relayMode = 0
+                    lightOn.isChecked -> msMainForSendModel.relayMode = 1
+                    lightAuto.isChecked -> msMainForSendModel.relayMode = 2
                 }
-            }
-        )
 
-        binding.delayTextInputLayout.setEndIconOnClickListener {
-            msMainModel?.let {
-                binding.delayTextField.text?.let { delayTextField ->
-                    val delay: Int = delayTextField.toString().toInt()
-                    msMainModel = it.copy(relay = it.relay.copy(delayOff = delay * 1000))
-                    save()
+                msMainForSendModel.sensor0Use = switchPir0.isChecked
+                msMainForSendModel.sensor1Use = switchPir1.isChecked
+                delayTextField.text?.let { editable ->
+                    msMainForSendModel.delayOff = editable.toString().toInt() * 1000
                 }
-            }
-        }
-    }
 
-    private fun save() {
-        msMainModel?.let {
-            val msMainForSendModel = it.toMsMainForSendModel()
-            viewModel.send(msMainForSendModel)
+                viewModel.send(msMainForSendModel)
+            }
         }
     }
 

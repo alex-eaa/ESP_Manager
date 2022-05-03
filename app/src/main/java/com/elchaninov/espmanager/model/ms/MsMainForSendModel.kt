@@ -3,8 +3,8 @@ package com.elchaninov.espmanager.model.ms
 
 data class MsMainForSendModel(
     val page: String = "index",
-    val relayMode: Int,
-    val delayOff: Int,
-    val sensor0Use: Boolean,
-    val sensor1Use: Boolean,
+    var relayMode: Int,
+    var delayOff: Int,
+    var sensor0Use: Boolean,
+    var sensor1Use: Boolean,
 ) : MsModelForSend

@@ -9,6 +9,7 @@ import com.elchaninov.espmanager.databinding.FragmentMsStatsBinding
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
 import com.elchaninov.espmanager.model.ms.MsMainModel
+import com.elchaninov.espmanager.model.ms.MsModel
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
 import com.elchaninov.espmanager.utils.showErrorSnackBar
@@ -25,7 +26,6 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
     private val viewModel: ViewModelFragmentMsMain by viewModel { parametersOf(deviceModel) }
 
     private var deviceModel: DeviceModel? = null
-    private var msMainModel: MsMainModel? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,9 +44,8 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
                 is AppState.Saving -> binding.includeProgress.progressBar.show("Сохранение...")
                 is AppState.Success -> {
                     binding.includeProgress.progressBar.hide()
-                    toLog("from liveData ${appState.msModel}")
-                    msMainModel = appState.msModel as MsMainModel
-                    renderData()
+                    binding.includeProgress.progressBar.hide()
+                    renderData(appState.msModel)
                 }
                 is AppState.Error -> {
                     binding.includeProgress.progressBar.hide()
@@ -56,8 +55,8 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
         }
     }
 
-    private fun renderData() {
-        msMainModel?.let {
+    private fun renderData(msModel: MsModel) {
+        (msModel as? MsMainModel)?.let {
             toLog("renderData $it")
             binding.textSumSwitchingOn.text = it.relay.sumSwitchingOn.toString()
             binding.textTotalTimeOn.text = millisToTime(it.relay.totalTimeOn)
@@ -66,12 +65,8 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
         }
     }
 
-    private fun viewListenerInit(){
-        binding.buttonStatsReset.setOnClickListener {
-            msMainModel?.let {
-                showAlertDialogFragment()
-            }
-        }
+    private fun viewListenerInit() {
+        binding.buttonStatsReset.setOnClickListener { showAlertDialogFragment() }
     }
 
     private fun showAlertDialogFragment() {
@@ -80,9 +75,7 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
 
     private fun setupAlertDialogFragmentListener() {
         MyDialogFragment.setupListener(childFragmentManager, viewLifecycleOwner) {
-            msMainModel?.let {
-                viewModel.statReset()
-            }
+            viewModel.statReset()
         }
     }
 
