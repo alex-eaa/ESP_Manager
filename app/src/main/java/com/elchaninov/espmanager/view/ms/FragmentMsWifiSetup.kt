@@ -1,78 +1,41 @@
 package com.elchaninov.espmanager.view.ms
 
-import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
 import android.widget.TextView
 import androidx.core.widget.doOnTextChanged
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import com.elchaninov.espmanager.R
 import com.elchaninov.espmanager.databinding.FragmentMsWifiSetupBinding
 import com.elchaninov.espmanager.model.AppState
-import com.elchaninov.espmanager.model.DeviceModel
 import com.elchaninov.espmanager.model.ms.MsModel
-import com.elchaninov.espmanager.model.ms.MsForSendModel
 import com.elchaninov.espmanager.model.ms.MsModelSetup
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
 import com.elchaninov.espmanager.utils.showErrorSnackBar
-import com.elchaninov.espmanager.view.dialog.DeviceResetDialogFragment
-import com.elchaninov.espmanager.view.dialog.ErrorDialogFragment
-import com.elchaninov.espmanager.view.dialog.SaveDialogFragment
 import com.google.android.material.textfield.TextInputEditText
-import org.koin.androidx.viewmodel.ext.android.stateViewModel
-import org.koin.core.parameter.parametersOf
 
-class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
+class FragmentMsWifiSetup :
+    BaseFragmentSetup<FragmentMsWifiSetupBinding>(FragmentMsWifiSetupBinding::inflate) {
 
-    private var _binding: FragmentMsWifiSetupBinding? = null
-    private val binding get() = _binding!!
-
-    private val viewModel: ViewModelFragmentMsSetup by stateViewModel { parametersOf(deviceModel) }
-
-    private var deviceModel: DeviceModel? = null
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentMsWifiSetupBinding.bind(view)
-        setHasOptionsMenu(true)
-        toLog("onViewCreated()")
-        deviceModel = requireArguments().getParcelable(FragmentMsMain.ARG_DEVICE)
-
-        subscribeLiveData()
-        viewListenerInit()
-
-        if (savedInstanceState == null) {
-            updateData()
-        }
-
-        setupDialogsFragmentListener()
-    }
-
-    private fun subscribeLiveData() {
+    override fun subscribeLiveData() {
         viewModel.liveData.observe(viewLifecycleOwner) { appState ->
-            when (appState) {
-                is AppState.Loading -> binding.includeProgress.progressBar.show("Соединение...")
-                is AppState.Restarting -> binding.includeProgress.progressBar.show("Перезагрузка...")
-                is AppState.Saving -> binding.includeProgress.progressBar.show("Сохранение...")
-                is AppState.Success -> {
-                    binding.includeProgress.progressBar.hide()
-                    renderData(appState.msModel)
-                }
-                is AppState.Error -> {
-                    binding.includeProgress.progressBar.hide()
-                    binding.root.showErrorSnackBar(appState.error.message.toString())
+            binding.apply {
+                when (appState) {
+                    is AppState.Loading -> includeProgress.progressBar.show("Соединение...")
+                    is AppState.Restarting -> includeProgress.progressBar.show("Перезагрузка...")
+                    is AppState.Saving -> includeProgress.progressBar.show("Сохранение...")
+                    is AppState.Success -> {
+                        includeProgress.progressBar.hide()
+                        renderData(appState.msModel)
+                    }
+                    is AppState.Error -> {
+                        includeProgress.progressBar.hide()
+                        root.showErrorSnackBar(appState.error.message.toString())
+                    }
                 }
             }
         }
     }
 
-    private fun renderData(msModel: MsModel?) {
+    override fun renderData(msModel: MsModel?) {
         if (viewModel.liveDataIsEditingMode.value == false) {
             (msModel as? MsModelSetup)?.let {
                 toLog("renderData $it")
@@ -98,7 +61,7 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
         }
     }
 
-    private fun sendData() {
+    override fun sendData() {
         viewModel.createMsModelForSend()?.let { msSetupForSendModel ->
 
             binding.apply {
@@ -148,38 +111,7 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
         }
     }
 
-    private fun showErrorDialogFragment() {
-        ErrorDialogFragment.show(childFragmentManager)
-    }
-
-    private fun showDeviceResetDialogFragment() {
-        DeviceResetDialogFragment.show(childFragmentManager)
-    }
-
-    private fun showSaveDialogFragment(msForSendModel: MsForSendModel) {
-        SaveDialogFragment.show(childFragmentManager, msForSendModel)
-    }
-
-    private fun setupDialogsFragmentListener() {
-        SaveDialogFragment.setupListener<MsForSendModel>(
-            childFragmentManager,
-            viewLifecycleOwner
-        ) { msModelForSend ->
-            viewModel.setEditingMode(false)
-            binding.root.clearFocus()
-            viewModel.sendData(msModelForSend)
-        }
-
-        DeviceResetDialogFragment.setupListener(childFragmentManager, viewLifecycleOwner) {
-            viewModel.liveDataResetResult.observe(viewLifecycleOwner) {
-                if (it == true)
-                    findNavController().popBackStack(R.id.fragmentMain, false)
-            }
-            viewModel.deviceReset()
-        }
-    }
-
-    private fun viewListenerInit() {
+    override fun viewListenerInit() {
         binding.apply {
             buttonDeviceReset.setOnClickListener {
                 showDeviceResetDialogFragment()
@@ -203,7 +135,7 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
             }
 
             wifiSsidEditText.doOnTextChanged { text, _, _, _ ->
-                wifiSsidTextField.error = checkErrorsInSsidName(text.toString())
+                wifiSsidTextField.error = checkIsBlank(text.toString())
                 if (wifiSsidEditText.isFocused) viewModel.setEditingMode(true)
             }
 
@@ -228,7 +160,7 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
             }
 
             apSsidEditText.doOnTextChanged { text, _, _, _ ->
-                apSsidTextField.error = checkErrorsInSsidName(text.toString())
+                apSsidTextField.error = checkIsBlank(text.toString())
                 if (apSsidEditText.isFocused) viewModel.setEditingMode(true)
             }
 
@@ -239,7 +171,7 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
         }
     }
 
-    private fun updateEnabledTextFields() {
+    override fun updateEnabledTextFields() {
         binding.apply {
             apSsidTextField.isEnabled = apModeSwitch.isChecked
             apPasswordTextField.isEnabled = apModeSwitch.isChecked
@@ -255,16 +187,10 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
         }
     }
 
-    private fun updateData() {
-        viewModel.setEditingMode(false)
-        binding.root.clearFocus()
-        viewModel.getData()
-    }
-
     private fun getIpAddressListFromEditText(editText: TextInputEditText): List<String> =
         (editText as TextView).text.toString().split(".").map { it.toInt().toString() }
 
-    private fun checkErrorsInSsidName(text: String): String? =
+    private fun checkIsBlank(text: String): String? =
         if (text.isBlank()) "Поле не может быть пустым" else null
 
     private fun checkErrorsInPassword(text: String): String? =
@@ -280,53 +206,7 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
         return ""
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_toolbar_ms_setup, menu)
-
-        viewModel.liveDataIsEditingMode.observe(viewLifecycleOwner) {
-            menu.findItem(R.id.action_settings_save).isVisible = it
-        }
-
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_settings_reload -> {
-                updateData()
-                return true
-            }
-            R.id.action_settings_save -> {
-                sendData()
-                return true
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        updateEnabledTextFields()
-        toLog("onStart()")
-    }
-
-    override fun onStop() {
-        toLog("onStop() isChangingConfigurations = ${checkChangingConfigurations()}")
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        toLog("onDestroy() isChangingConfigurations = ${checkChangingConfigurations()}")
-        _binding = null
-        super.onDestroy()
-    }
-
-    private fun checkChangingConfigurations(): Boolean {
-        return requireActivity().isChangingConfigurations
-    }
-
-    private fun toLog(message: String) {
+    override fun toLog(message: String) {
         val className = this.javaClass.simpleName
         val hashCode = this.hashCode()
         Log.d("qqq", "$className:$hashCode: $message")
