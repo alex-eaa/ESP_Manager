@@ -23,7 +23,7 @@ open class ViewModelFragmentMsMain(
 ) : ViewModel() {
 
     private val gson = Gson()
-    private lateinit var webSocketFlowRepoImpl: WebSocketFlowRepoImpl
+    private var webSocketFlowRepoImpl: WebSocketFlowRepoImpl? = null
     private var job: Job? = null
 
     private val _liveData: MutableLiveData<AppState> = MutableLiveData()
@@ -41,12 +41,13 @@ open class ViewModelFragmentMsMain(
     fun startFlow() {
         toLog("startFlow()")
         if (job == null) {
-
-            job = viewModelScope.launch(handler) {
+            webSocketFlowRepoImpl?.let { webSocketFlowRepoImpl ->
                 toLog("startFlow() Flow started")
-                webSocketFlowRepoImpl.getFlow()
-                    .onStart { _liveData.postValue(AppState.Loading) }
-                    .collect { _liveData.postValue(AppState.Success(deserializationJson(it))) }
+                job = viewModelScope.launch(handler) {
+                    webSocketFlowRepoImpl.getFlow()
+                        .onStart { _liveData.postValue(AppState.Loading) }
+                        .collect { _liveData.postValue(AppState.Success(deserializationJson(it))) }
+                }
             }
         }
     }
@@ -59,9 +60,11 @@ open class ViewModelFragmentMsMain(
 
     fun send(msModelForSend: MsModelForSend) {
         toLog("send")
-        _liveData.value = AppState.Saving
-        viewModelScope.launch(Dispatchers.IO + handler) {
-            webSocketFlowRepoImpl.sendToWebSocket(gson.toJson(msModelForSend))
+        webSocketFlowRepoImpl?.let { webSocketFlowRepoImpl ->
+            _liveData.postValue(AppState.Saving)
+            viewModelScope.launch(Dispatchers.IO + handler) {
+                webSocketFlowRepoImpl.sendToWebSocket(gson.toJson(msModelForSend))
+            }
         }
     }
 
@@ -71,9 +74,11 @@ open class ViewModelFragmentMsMain(
 
     fun statReset() {
         toLog("statReset()")
-        _liveData.value = AppState.Saving
-        viewModelScope.launch(Dispatchers.IO + handler) {
-            webSocketFlowRepoImpl.sendToWebSocket(ESP_ACTION_STATS_RESET)
+        webSocketFlowRepoImpl?.let { webSocketFlowRepoImpl ->
+            _liveData.postValue(AppState.Saving)
+            viewModelScope.launch(Dispatchers.IO + handler) {
+                webSocketFlowRepoImpl.sendToWebSocket(ESP_ACTION_STATS_RESET)
+            }
         }
     }
 

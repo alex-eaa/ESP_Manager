@@ -37,13 +37,13 @@ open class ViewModelFragmentMsSetup(
     var msSetupForSendModel: MsSetupForSendModel? = null
 
     private fun saveInStateHandle() {
-        handle.set("msSetupForSendModel", msSetupForSendModel)
-        handle.set("isEditingMode", _liveDataIsEditingMode.value)
+        handle.set(HANDLE_KEY_MS_SETUP_FOR_SEND_MODEL, msSetupForSendModel)
+        handle.set(HANDLE_KEY_IS_EDITING_MODE, _liveDataIsEditingMode.value)
     }
 
     private fun restoreFromStateHandle() {
-        msSetupForSendModel = handle.get<MsSetupForSendModel>("msSetupForSendModel")
-        handle.get<Boolean>("isEditingMode")?.let {
+        msSetupForSendModel = handle.get<MsSetupForSendModel>(HANDLE_KEY_MS_SETUP_FOR_SEND_MODEL)
+        handle.get<Boolean>(HANDLE_KEY_IS_EDITING_MODE)?.let {
             _liveDataIsEditingMode.value = it
         }
     }
@@ -129,5 +129,7 @@ open class ViewModelFragmentMsSetup(
 
     companion object {
         const val PAGE = "setup.htm"
+        const val HANDLE_KEY_MS_SETUP_FOR_SEND_MODEL = "msSetupForSendModel"
+        const val HANDLE_KEY_IS_EDITING_MODE = "isEditingMode"
     }
 }
