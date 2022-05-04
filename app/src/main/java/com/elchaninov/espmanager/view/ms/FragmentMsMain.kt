@@ -21,8 +21,8 @@ import com.elchaninov.espmanager.R
 import com.elchaninov.espmanager.databinding.FragmentMsMainBinding
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
-import com.elchaninov.espmanager.model.ms.MsModelMain
 import com.elchaninov.espmanager.model.ms.MsModel
+import com.elchaninov.espmanager.model.ms.MsModelMain
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
 import com.elchaninov.espmanager.utils.showErrorSnackBar

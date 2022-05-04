@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
-import com.elchaninov.espmanager.model.ms.MsModel
 import com.elchaninov.espmanager.model.ms.MsForSendModel
+import com.elchaninov.espmanager.model.ms.MsModel
 import com.elchaninov.espmanager.model.repo.webSocket.MyWebSocketRepo
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineExceptionHandler

@@ -35,7 +35,7 @@ class FragmentMsWifiSetup :
         }
     }
 
-    override fun renderData(msModel: MsModel?) {
+    private fun renderData(msModel: MsModel?) {
         if (viewModel.liveDataIsEditingMode.value == false) {
             (msModel as? MsModelSetup)?.let {
                 toLog("renderData $it")
@@ -111,7 +111,7 @@ class FragmentMsWifiSetup :
         }
     }
 
-    override fun viewListenerInit() {
+    override fun viewInit() {
         binding.apply {
             buttonDeviceReset.setOnClickListener {
                 showDeviceResetDialogFragment()
