@@ -1,32 +1,24 @@
 package com.elchaninov.espmanager.view.ms
 
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
-import com.elchaninov.espmanager.model.ms.MsModel
-import com.elchaninov.espmanager.model.ms.MsSetupForSendModel
-import com.elchaninov.espmanager.model.ms.MsSetupModel
-import com.elchaninov.espmanager.model.ms.toMsSetupForSendModel
+import com.elchaninov.espmanager.model.ms.*
 import com.elchaninov.espmanager.model.repo.webSocket.WebSocketRepo
 import com.elchaninov.espmanager.model.repo.webSocket.WebSocketRepoImpl
-import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okhttp3.Request
 
 open class ViewModelFragmentMsSetup(
-    private val deviceModel: DeviceModel,
+    deviceModel: DeviceModel,
+    page: String,
     private val handle: SavedStateHandle
-) : ViewModel() {
-
-    private val gson = Gson()
-    private var webSocketRepo: WebSocketRepo? = null
-
-    private val _liveData: MutableLiveData<AppState> = MutableLiveData()
-    val liveData: LiveData<AppState> get() = _liveData
+) : BaseViewModel<WebSocketRepo>(deviceModel, page) {
 
     private val _liveDataIsEditingMode: MutableLiveData<Boolean> = MutableLiveData(false)
     val liveDataIsEditingMode: LiveData<Boolean> get() = _liveDataIsEditingMode
@@ -34,45 +26,13 @@ open class ViewModelFragmentMsSetup(
     private val _liveDataResetResult: MutableLiveData<Boolean> = MutableLiveData(false)
     val liveDataResetResult: LiveData<Boolean> get() = _liveDataResetResult
 
-    var msSetupForSendModel: MsSetupForSendModel? = null
-
-    private fun saveInStateHandle() {
-        handle.set(HANDLE_KEY_MS_SETUP_FOR_SEND_MODEL, msSetupForSendModel)
-        handle.set(HANDLE_KEY_IS_EDITING_MODE, _liveDataIsEditingMode.value)
-    }
-
-    private fun restoreFromStateHandle() {
-        msSetupForSendModel = handle.get<MsSetupForSendModel>(HANDLE_KEY_MS_SETUP_FOR_SEND_MODEL)
-        handle.get<Boolean>(HANDLE_KEY_IS_EDITING_MODE)?.let {
-            _liveDataIsEditingMode.value = it
-        }
-    }
-
     init {
-        deviceModel.ip?.let { ip ->
-            val request =
-                Request.Builder().url("ws://$ip:${deviceModel.port}/$PAGE").build()
-            webSocketRepo = WebSocketRepoImpl(request)
-            toLog("INIT, WebSocket request=$request")
-        }
-
+        request?.let { myWebSocketRepo = WebSocketRepoImpl(it) }
         restoreFromStateHandle()
     }
 
-    fun createMsSetupForSendModel() {
-        (getLoadedMsModel() as? MsSetupModel)?.let { msModel ->
-            msSetupForSendModel = msModel.toMsSetupForSendModel()
-            saveInStateHandle()
-        }
-    }
-
-    fun setEditingMode(value: Boolean) {
-        _liveDataIsEditingMode.value = value
-        saveInStateHandle()
-    }
-
-    fun getData() {
-        webSocketRepo?.let {
+    override fun getData() {
+        myWebSocketRepo?.let {
             _liveData.postValue(AppState.Loading)
             viewModelScope.launch(Dispatchers.IO + handler) {
                 it.get()?.let { msg ->
@@ -83,18 +43,23 @@ open class ViewModelFragmentMsSetup(
         }
     }
 
-    fun send() {
-        webSocketRepo?.let {
+    override fun sendData(msForSendModel: MsForSendModel) {
+        myWebSocketRepo?.let {
             _liveData.postValue(AppState.Saving)
             viewModelScope.launch(Dispatchers.IO + handler) {
-                it.send(gson.toJson(msSetupForSendModel))
+                it.sendToWebSocket(gson.toJson(msForSendModel))
                 getData()
             }
         }
     }
 
+    fun setEditingMode(value: Boolean) {
+        _liveDataIsEditingMode.value = value
+        saveInStateHandle()
+    }
+
     fun deviceReset() {
-        webSocketRepo?.let {
+        myWebSocketRepo?.let {
             _liveData.postValue(AppState.Restarting)
             viewModelScope.launch(Dispatchers.IO) {
                 it.sendReset()
@@ -104,32 +69,36 @@ open class ViewModelFragmentMsSetup(
         }
     }
 
-    private fun getLoadedMsModel(): MsModel? = (liveData.value as? AppState.Success)?.msModel
+    private fun saveInStateHandle() {
+        handle.set(HANDLE_KEY_IS_EDITING_MODE, _liveDataIsEditingMode.value)
+    }
 
-    private fun deserializationJson(json: String): MsModel {
-        return gson.fromJson(json, MsSetupModel::class.java)
+    private fun restoreFromStateHandle() {
+        handle.get<Boolean>(HANDLE_KEY_IS_EDITING_MODE)?.let {
+            _liveDataIsEditingMode.value = it
+        }
+    }
+
+    override fun createMsModelForSend(): MsForSendModelSetup? =
+        (getLoadedMsModel() as? MsModelSetup)?.toMsModelForSend()
+
+    override fun deserializationJson(json: String): MsModel {
+        return gson.fromJson(json, MsModelSetup::class.java)
     }
 
     override fun onCleared() {
         toLog("onCleared()")
-        webSocketRepo = null
+        myWebSocketRepo = null
         super.onCleared()
     }
 
-    private val handler = CoroutineExceptionHandler { _, exception ->
-        toLog("ERROR in CoroutineExceptionHandler: $exception")
-        _liveData.postValue(AppState.Error(exception))
-    }
-
-    private fun toLog(message: String) {
-        val className = this.javaClass.simpleName
+    override fun toLog(message: String) {
+        val className = javaClass.simpleName
         val hashCode = this.hashCode()
         Log.d("qqq", "$className:$hashCode: $message")
     }
 
     companion object {
-        const val PAGE = "setup.htm"
-        const val HANDLE_KEY_MS_SETUP_FOR_SEND_MODEL = "msSetupForSendModel"
         const val HANDLE_KEY_IS_EDITING_MODE = "isEditingMode"
     }
 }

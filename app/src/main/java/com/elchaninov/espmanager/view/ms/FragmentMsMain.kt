@@ -21,7 +21,8 @@ import com.elchaninov.espmanager.R
 import com.elchaninov.espmanager.databinding.FragmentMsMainBinding
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
-import com.elchaninov.espmanager.model.ms.*
+import com.elchaninov.espmanager.model.ms.MsModelMain
+import com.elchaninov.espmanager.model.ms.MsModel
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
 import com.elchaninov.espmanager.utils.showErrorSnackBar
@@ -68,7 +69,7 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
     }
 
     private fun renderData(msModel: MsModel) {
-        (msModel as? MsMainModel)?.let {
+        (msModel as? MsModelMain)?.let {
             toLog("renderData $it")
 
             when (it.relay.relayState) {
@@ -150,7 +151,7 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
                     msMainForSendModel.delayOff = editable.toString().toInt() * 1000
                 }
 
-                viewModel.send(msMainForSendModel)
+                viewModel.sendData(msMainForSendModel)
             }
         }
     }
@@ -213,7 +214,7 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
 
     override fun onStart() {
         toLog("onStart()")
-        viewModel.startFlow()
+        viewModel.getData()
         super.onStart()
     }
 

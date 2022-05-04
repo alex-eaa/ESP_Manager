@@ -1,4 +1,4 @@
-package com.elchaninov.espmanager.view
+package com.elchaninov.espmanager.view.dialog
 
 import android.app.Dialog
 import android.content.DialogInterface

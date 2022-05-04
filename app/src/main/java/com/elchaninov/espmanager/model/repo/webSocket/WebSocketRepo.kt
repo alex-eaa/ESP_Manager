@@ -1,7 +1,7 @@
 package com.elchaninov.espmanager.model.repo.webSocket
 
-interface WebSocketRepo {
-    suspend fun sendReset()
-    suspend fun send(message: String): Boolean
+interface WebSocketRepo : MyWebSocketRepo {
     suspend fun get(): String?
+    suspend fun sendToWebSocket(message: String): Boolean
+    suspend fun sendReset()
 }

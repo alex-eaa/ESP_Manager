@@ -1,7 +1,7 @@
 package com.elchaninov.espmanager.model.ms
 
 
-data class MsSetupModel(
+data class MsModelSetup(
     val p_ssid: String,
     val p_password: String,
     val p_ssidAP: String,

@@ -1,14 +1,14 @@
 package com.elchaninov.espmanager.model.ms
 
 
-fun MsMainModel.toMsMainForSendModel() = MsMainForSendModel(
+fun MsModelMain.toMsModelForSend() = MsForSendModelMain(
     relayMode = this.relay.relayMode,
     delayOff = this.relay.delayOff,
     sensor0Use = this.relay.sensor0Use,
     sensor1Use = this.relay.sensor1Use
 )
 
-fun MsSetupModel.toMsSetupForSendModel() = MsSetupForSendModel(
+fun MsModelSetup.toMsModelForSend() = MsForSendModelSetup(
     p_ssid = this.p_ssid,
     p_password = this.p_password,
     p_ssidAP = this.p_ssidAP,
@@ -29,7 +29,7 @@ fun MsSetupModel.toMsSetupForSendModel() = MsSetupForSendModel(
     mqttPass = this.mqttPass,
 )
 
-fun MsSetupForSendModel.toMsSetupModel() = MsSetupModel(
+fun MsForSendModelSetup.toMsSetupModel() = MsModelSetup(
     p_ssid = this.p_ssid,
     p_password = this.p_password,
     p_ssidAP = this.p_ssidAP,

@@ -12,14 +12,14 @@ class WebSocketFlowRepoImpl(private val request: Request) : WebSocketFlowRepo {
     private val httpClient = OkHttpClient()
     private var mWebSocket: WebSocket? = null
 
-    override suspend fun sendToWebSocket(text: String): Boolean {
-        toLog("sendToWebSocket()")
+    override suspend fun sendToWebSocket(message: String): Boolean {
+        toLog("send() $message")
         mWebSocket?.let {
-            it.send(text)
+            it.send(message)
             while (it.queueSize() > 0) {
                 delay(10L)
             }
-            toLog("Сообщение отправлено успешно: $text")
+            toLog("Сообщение отправлено успешно: $message")
             return true
         }
         toLog("Неудалось отправить сообщение, mWebSocket=$mWebSocket")

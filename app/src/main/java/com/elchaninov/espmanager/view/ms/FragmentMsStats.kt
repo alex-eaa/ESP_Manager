@@ -8,13 +8,12 @@ import com.elchaninov.espmanager.R
 import com.elchaninov.espmanager.databinding.FragmentMsStatsBinding
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
-import com.elchaninov.espmanager.model.ms.MsMainModel
+import com.elchaninov.espmanager.model.ms.MsModelMain
 import com.elchaninov.espmanager.model.ms.MsModel
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
 import com.elchaninov.espmanager.utils.showErrorSnackBar
-import com.elchaninov.espmanager.view.AlertType
-import com.elchaninov.espmanager.view.MyDialogFragment
+import com.elchaninov.espmanager.view.dialog.StatResetDialogFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -33,7 +32,7 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
         deviceModel = requireArguments().getParcelable(FragmentMsMain.ARG_DEVICE)
         subscribeLiveData()
         viewListenerInit()
-        setupAlertDialogFragmentListener()
+        setupAlertDialogsFragmentListener()
     }
 
     private fun subscribeLiveData() {
@@ -56,7 +55,7 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
     }
 
     private fun renderData(msModel: MsModel) {
-        (msModel as? MsMainModel)?.let {
+        (msModel as? MsModelMain)?.let {
             toLog("renderData $it")
             binding.textSumSwitchingOn.text = it.relay.sumSwitchingOn.toString()
             binding.textTotalTimeOn.text = millisToTime(it.relay.totalTimeOn)
@@ -70,11 +69,11 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
     }
 
     private fun showAlertDialogFragment() {
-        MyDialogFragment.show(childFragmentManager, AlertType.STATS_RESET)
+        StatResetDialogFragment.show(childFragmentManager)
     }
 
-    private fun setupAlertDialogFragmentListener() {
-        MyDialogFragment.setupListener(childFragmentManager, viewLifecycleOwner) {
+    private fun setupAlertDialogsFragmentListener() {
+        StatResetDialogFragment.setupListener(childFragmentManager, viewLifecycleOwner) {
             viewModel.statReset()
         }
     }
@@ -92,7 +91,7 @@ class FragmentMsStats : Fragment(R.layout.fragment_ms_stats) {
     override fun onStart() {
         super.onStart()
         toLog("onStart()")
-        viewModel.startFlow()
+        viewModel.getData()
     }
 
     override fun onStop() {

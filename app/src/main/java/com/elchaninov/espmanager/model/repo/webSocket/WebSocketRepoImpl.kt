@@ -26,8 +26,8 @@ class WebSocketRepoImpl(private val request: Request) : WebSocketRepo {
     }
 
 
-    override suspend fun send(message: String): Boolean = suspendCoroutine { continuation ->
-        toLog("send()")
+    override suspend fun sendToWebSocket(message: String): Boolean = suspendCoroutine { continuation ->
+        toLog("send() $message")
 
         val webSocketListener = object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {

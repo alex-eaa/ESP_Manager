@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class MsSetupForSendModel(
+data class MsForSendModelSetup(
     val page: String = "setup",
 
     var p_ssid: String,
@@ -25,7 +25,7 @@ data class MsSetupForSendModel(
     var mqtt_server_port: String,
     var mqttUser: String,
     var mqttPass: String,
-) : MsModelForSend, Parcelable
+) : MsForSendModel, Parcelable
 
 //WS TO Server:
 //{

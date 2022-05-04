@@ -18,11 +18,13 @@ val application = module {
     viewModel { ViewModelFragmentMain(get()) }
 
     viewModel { parameters ->
-        ViewModelFragmentMsSetup(deviceModel = parameters.get(), get())
+        ViewModelFragmentMsSetup(deviceModel = parameters.get(), SETUP_PAGE, get())
     }
 
     viewModel { parameters ->
-        ViewModelFragmentMsMain(deviceModel = parameters.get())
+        ViewModelFragmentMsMain(deviceModel = parameters.get(), MAIN_PAGE)
     }
 }
 
+const val MAIN_PAGE = "index.htm"
+const val SETUP_PAGE = "setup.htm"

@@ -15,13 +15,14 @@ import com.elchaninov.espmanager.databinding.FragmentMsMqttSetupBinding
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
 import com.elchaninov.espmanager.model.ms.MsModel
-import com.elchaninov.espmanager.model.ms.MsSetupModel
+import com.elchaninov.espmanager.model.ms.MsForSendModel
+import com.elchaninov.espmanager.model.ms.MsModelSetup
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
 import com.elchaninov.espmanager.utils.showErrorSnackBar
-import com.elchaninov.espmanager.view.AlertType
-import com.elchaninov.espmanager.view.DeviceResetDialogFragment
-import com.elchaninov.espmanager.view.MyDialogFragment
+import com.elchaninov.espmanager.view.dialog.DeviceResetDialogFragment
+import com.elchaninov.espmanager.view.dialog.ErrorDialogFragment
+import com.elchaninov.espmanager.view.dialog.SaveDialogFragment
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -49,7 +50,7 @@ class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
             updateData()
         }
 
-        setupAlertDialogFragmentListener()
+        setupDialogsFragmentListener()
     }
 
     private fun subscribeLiveData() {
@@ -72,7 +73,7 @@ class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
 
     private fun renderData(msModel: MsModel?) {
         if (viewModel.liveDataIsEditingMode.value == false) {
-            (msModel as? MsSetupModel)?.let {
+            (msModel as? MsModelSetup)?.let {
                 toLog("renderData $it")
                 binding.apply {
                     switchMqttOnOff.isChecked = it.flagMQTT
@@ -89,9 +90,7 @@ class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
     }
 
     private fun sendData() {
-        viewModel.createMsSetupForSendModel()
-
-        viewModel.msSetupForSendModel?.let { msSetupForSendModel ->
+        viewModel.createMsModelForSend()?.let { msSetupForSendModel ->
 
             binding.apply {
                 msSetupForSendModel.flagMQTT = switchMqttOnOff.isChecked
@@ -116,25 +115,36 @@ class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
                             (mqttPasswordEditText as TextView).text.toString()
 
                     } else {
-                        showAlertDialogFragment(AlertType.ERROR)
+                        showErrorDialogFragment()
                         return
                     }
                 }
 
-                showAlertDialogFragment(AlertType.CONFIRM)
+                showSaveDialogFragment(msSetupForSendModel)
             }
         }
     }
 
-    private fun showAlertDialogFragment(alertType: AlertType) {
-        MyDialogFragment.show(childFragmentManager, alertType)
+    private fun showErrorDialogFragment() {
+        ErrorDialogFragment.show(childFragmentManager)
     }
 
-    private fun setupAlertDialogFragmentListener() {
-        MyDialogFragment.setupListener(childFragmentManager, viewLifecycleOwner) {
+    private fun showDeviceResetDialogFragment() {
+        DeviceResetDialogFragment.show(childFragmentManager)
+    }
+
+    private fun showSaveDialogFragment(msForSendModel: MsForSendModel) {
+        SaveDialogFragment.show(childFragmentManager, msForSendModel)
+    }
+
+    private fun setupDialogsFragmentListener() {
+        SaveDialogFragment.setupListener<MsForSendModel>(
+            childFragmentManager,
+            viewLifecycleOwner
+        ) { msModelForSend ->
             viewModel.setEditingMode(false)
             binding.root.clearFocus()
-            viewModel.send()
+            viewModel.sendData(msModelForSend)
         }
 
         DeviceResetDialogFragment.setupListener(childFragmentManager, viewLifecycleOwner) {
@@ -149,7 +159,7 @@ class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
     private fun viewListenerInit() {
         binding.apply {
             buttonDeviceReset.setOnClickListener {
-                DeviceResetDialogFragment.show(childFragmentManager)
+                showDeviceResetDialogFragment()
             }
 
             switchMqttOnOff.setOnClickListener {
@@ -241,6 +251,7 @@ class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
     }
 
     override fun onDestroy() {
+        toLog("onDestroy() isChangingConfigurations = ${checkChangingConfigurations()}")
         _binding = null
         super.onDestroy()
     }
@@ -258,8 +269,5 @@ class FragmentMsMqttSetup : Fragment(R.layout.fragment_ms_mqtt_setup) {
     companion object {
         const val REGEX_VALID_URL =
             "[-a-zA-Z0-9@:%_\\+.~#?&\\/=]{2,256}\\.[a-z]{2,4}\\b(\\/[-a-zA-Z0-9@:%_\\+.~#?&\\/=]*)?"
-
-        const val REGEX_VALID_IP =
-            "((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)"
     }
 }

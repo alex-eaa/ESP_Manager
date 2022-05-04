@@ -15,13 +15,14 @@ import com.elchaninov.espmanager.databinding.FragmentMsWifiSetupBinding
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
 import com.elchaninov.espmanager.model.ms.MsModel
-import com.elchaninov.espmanager.model.ms.MsSetupModel
+import com.elchaninov.espmanager.model.ms.MsForSendModel
+import com.elchaninov.espmanager.model.ms.MsModelSetup
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
 import com.elchaninov.espmanager.utils.showErrorSnackBar
-import com.elchaninov.espmanager.view.AlertType
-import com.elchaninov.espmanager.view.DeviceResetDialogFragment
-import com.elchaninov.espmanager.view.MyDialogFragment
+import com.elchaninov.espmanager.view.dialog.DeviceResetDialogFragment
+import com.elchaninov.espmanager.view.dialog.ErrorDialogFragment
+import com.elchaninov.espmanager.view.dialog.SaveDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import org.koin.core.parameter.parametersOf
@@ -34,6 +35,7 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
     private val viewModel: ViewModelFragmentMsSetup by stateViewModel { parametersOf(deviceModel) }
 
     private var deviceModel: DeviceModel? = null
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -49,9 +51,8 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
             updateData()
         }
 
-        setupAlertDialogFragmentListener()
+        setupDialogsFragmentListener()
     }
-
 
     private fun subscribeLiveData() {
         viewModel.liveData.observe(viewLifecycleOwner) { appState ->
@@ -71,84 +72,9 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
         }
     }
 
-    private fun sendData() {
-        viewModel.createMsSetupForSendModel()
-
-        viewModel.msSetupForSendModel?.let { msSetupForSendModel ->
-
-            binding.apply {
-                if (!apModeSwitch.isChecked) {
-                    msSetupForSendModel.wifiAP_mode = apModeSwitch.isChecked
-                    if (wifiSsidTextField.error == null && wifiPasswordTextField.error == null) {
-                        msSetupForSendModel.p_ssid =
-                            (wifiSsidEditText as TextView).text.toString()
-                        msSetupForSendModel.p_password =
-                            (wifiPasswordEditText as TextView).text.toString()
-                    } else {
-                        showAlertDialogFragment(AlertType.ERROR)
-                        return
-                    }
-                }
-
-                if (apModeSwitch.isChecked) {
-                    msSetupForSendModel.wifiAP_mode = apModeSwitch.isChecked
-                    if (apSsidTextField.error == null && apPasswordTextField.error == null) {
-                        msSetupForSendModel.p_ssidAP =
-                            (apSsidEditText as TextView).text.toString()
-                        msSetupForSendModel.p_passwordAP =
-                            (apPasswordEditText as TextView).text.toString()
-                    } else {
-                        showAlertDialogFragment(AlertType.ERROR)
-                        return
-                    }
-                }
-
-                if (staticIpCheckbox.isChecked) {
-                    msSetupForSendModel.static_IP = staticIpCheckbox.isChecked
-                    if (wifiIpTextField.error == null && wifiMaskTextField.error == null && wifiGatewayTextField.error == null) {
-                        msSetupForSendModel.ip =
-                            getIpAddressListFromEditText(wifiIpEditText)
-                        msSetupForSendModel.sbnt =
-                            getIpAddressListFromEditText(wifiMaskEditText)
-                        msSetupForSendModel.gtw =
-                            getIpAddressListFromEditText(wifiGatewayEditText)
-                    } else {
-                        showAlertDialogFragment(AlertType.ERROR)
-                        return
-                    }
-                }
-
-                showAlertDialogFragment(AlertType.CONFIRM)
-            }
-        }
-    }
-
-    private fun showAlertDialogFragment(alertType: AlertType) {
-        MyDialogFragment.show(childFragmentManager, alertType)
-    }
-
-    private fun setupAlertDialogFragmentListener() {
-        MyDialogFragment.setupListener(childFragmentManager, viewLifecycleOwner) {
-            viewModel.setEditingMode(false)
-            binding.root.clearFocus()
-            viewModel.send()
-        }
-
-        DeviceResetDialogFragment.setupListener(childFragmentManager, viewLifecycleOwner) {
-            viewModel.liveDataResetResult.observe(viewLifecycleOwner) {
-                if (it == true)
-                    findNavController().popBackStack(R.id.fragmentMain, false)
-            }
-            viewModel.deviceReset()
-        }
-    }
-
-    private fun getIpAddressListFromEditText(editText: TextInputEditText): List<String> =
-        (editText as TextView).text.toString().split(".").map { it.toInt().toString() }
-
     private fun renderData(msModel: MsModel?) {
         if (viewModel.liveDataIsEditingMode.value == false) {
-            (msModel as? MsSetupModel)?.let {
+            (msModel as? MsModelSetup)?.let {
                 toLog("renderData $it")
                 binding.apply {
                     wifiModeSwitch.isChecked = !it.wifiAP_mode
@@ -172,16 +98,91 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
         }
     }
 
-    private fun updateData() {
-        viewModel.setEditingMode(false)
-        binding.root.clearFocus()
-        viewModel.getData()
+    private fun sendData() {
+        viewModel.createMsModelForSend()?.let { msSetupForSendModel ->
+
+            binding.apply {
+                if (!apModeSwitch.isChecked) {
+                    msSetupForSendModel.wifiAP_mode = apModeSwitch.isChecked
+                    if (wifiSsidTextField.error == null && wifiPasswordTextField.error == null) {
+                        msSetupForSendModel.p_ssid =
+                            (wifiSsidEditText as TextView).text.toString()
+                        msSetupForSendModel.p_password =
+                            (wifiPasswordEditText as TextView).text.toString()
+                    } else {
+                        showErrorDialogFragment()
+                        return
+                    }
+                }
+
+                if (apModeSwitch.isChecked) {
+                    msSetupForSendModel.wifiAP_mode = apModeSwitch.isChecked
+                    if (apSsidTextField.error == null && apPasswordTextField.error == null) {
+                        msSetupForSendModel.p_ssidAP =
+                            (apSsidEditText as TextView).text.toString()
+                        msSetupForSendModel.p_passwordAP =
+                            (apPasswordEditText as TextView).text.toString()
+                    } else {
+                        showErrorDialogFragment()
+                        return
+                    }
+                }
+
+                if (staticIpCheckbox.isChecked) {
+                    msSetupForSendModel.static_IP = staticIpCheckbox.isChecked
+                    if (wifiIpTextField.error == null && wifiMaskTextField.error == null && wifiGatewayTextField.error == null) {
+                        msSetupForSendModel.ip =
+                            getIpAddressListFromEditText(wifiIpEditText)
+                        msSetupForSendModel.sbnt =
+                            getIpAddressListFromEditText(wifiMaskEditText)
+                        msSetupForSendModel.gtw =
+                            getIpAddressListFromEditText(wifiGatewayEditText)
+                    } else {
+                        showErrorDialogFragment()
+                        return
+                    }
+                }
+
+                showSaveDialogFragment(msSetupForSendModel)
+            }
+        }
+    }
+
+    private fun showErrorDialogFragment() {
+        ErrorDialogFragment.show(childFragmentManager)
+    }
+
+    private fun showDeviceResetDialogFragment() {
+        DeviceResetDialogFragment.show(childFragmentManager)
+    }
+
+    private fun showSaveDialogFragment(msForSendModel: MsForSendModel) {
+        SaveDialogFragment.show(childFragmentManager, msForSendModel)
+    }
+
+    private fun setupDialogsFragmentListener() {
+        SaveDialogFragment.setupListener<MsForSendModel>(
+            childFragmentManager,
+            viewLifecycleOwner
+        ) { msModelForSend ->
+            viewModel.setEditingMode(false)
+            binding.root.clearFocus()
+            viewModel.sendData(msModelForSend)
+        }
+
+        DeviceResetDialogFragment.setupListener(childFragmentManager, viewLifecycleOwner) {
+            viewModel.liveDataResetResult.observe(viewLifecycleOwner) {
+                if (it == true)
+                    findNavController().popBackStack(R.id.fragmentMain, false)
+            }
+            viewModel.deviceReset()
+        }
     }
 
     private fun viewListenerInit() {
         binding.apply {
             buttonDeviceReset.setOnClickListener {
-                DeviceResetDialogFragment.show(childFragmentManager)
+                showDeviceResetDialogFragment()
             }
 
             wifiModeSwitch.setOnClickListener {
@@ -253,6 +254,15 @@ class FragmentMsWifiSetup : Fragment(R.layout.fragment_ms_wifi_setup) {
             wifiGatewayTextField.isEnabled = staticIpCheckbox.isChecked && wifiModeSwitch.isChecked
         }
     }
+
+    private fun updateData() {
+        viewModel.setEditingMode(false)
+        binding.root.clearFocus()
+        viewModel.getData()
+    }
+
+    private fun getIpAddressListFromEditText(editText: TextInputEditText): List<String> =
+        (editText as TextView).text.toString().split(".").map { it.toInt().toString() }
 
     private fun checkErrorsInSsidName(text: String): String? =
         if (text.isBlank()) "Поле не может быть пустым" else null
