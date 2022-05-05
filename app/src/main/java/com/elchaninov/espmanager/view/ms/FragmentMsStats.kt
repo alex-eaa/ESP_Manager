@@ -25,18 +25,19 @@ class FragmentMsStats : BaseFragment<FragmentMsStatsBinding>(FragmentMsStatsBind
 
     override fun subscribeLiveData() {
         viewModel.liveData.observe(viewLifecycleOwner) { appState ->
-            when (appState) {
-                is AppState.Loading -> binding.includeProgress.progressBar.show("Соединение...")
-                is AppState.Restarting -> binding.includeProgress.progressBar.show("Перезагрузка...")
-                is AppState.Saving -> binding.includeProgress.progressBar.show("Сохранение...")
-                is AppState.Success -> {
-                    binding.includeProgress.progressBar.hide()
-                    binding.includeProgress.progressBar.hide()
-                    renderData(appState.msModel)
-                }
-                is AppState.Error -> {
-                    binding.includeProgress.progressBar.hide()
-                    binding.root.showErrorSnackBar(appState.error.message.toString())
+            with(binding.includeProgress) {
+                when (appState) {
+                    is AppState.Loading -> progressBar.show("Соединение...")
+                    is AppState.Restarting -> progressBar.show("Перезагрузка...")
+                    is AppState.Saving -> progressBar.show("Сохранение...")
+                    is AppState.Success -> {
+                        progressBar.hide()
+                        renderData(appState.msModel)
+                    }
+                    is AppState.Error -> {
+                        progressBar.hide()
+                        binding.root.showErrorSnackBar(appState.error.message.toString())
+                    }
                 }
             }
         }
@@ -45,7 +46,7 @@ class FragmentMsStats : BaseFragment<FragmentMsStatsBinding>(FragmentMsStatsBind
     private fun renderData(msModel: MsModel?) {
         (msModel as? MsModelMain)?.let {
             toLog("renderData $it")
-            binding.apply {
+            with(binding) {
                 textSumSwitchingOn.text = it.relay.sumSwitchingOn.toString()
                 textTotalTimeOn.text = millisToTime(it.relay.totalTimeOn)
                 textMaxContinuousOn.text = millisToTime(it.relay.maxContinuousOn)

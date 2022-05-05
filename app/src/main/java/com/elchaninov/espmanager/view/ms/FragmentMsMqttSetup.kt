@@ -16,18 +16,18 @@ class FragmentMsMqttSetup :
 
     override fun subscribeLiveData() {
         viewModel.liveData.observe(viewLifecycleOwner) { appState ->
-            binding.apply {
+            with(binding.includeProgress) {
                 when (appState) {
-                    is AppState.Loading -> includeProgress.progressBar.show("Соединение...")
-                    is AppState.Restarting -> includeProgress.progressBar.show("Перезагрузка...")
-                    is AppState.Saving -> includeProgress.progressBar.show("Сохранение...")
+                    is AppState.Loading -> progressBar.show("Соединение...")
+                    is AppState.Restarting -> progressBar.show("Перезагрузка...")
+                    is AppState.Saving -> progressBar.show("Сохранение...")
                     is AppState.Success -> {
-                        includeProgress.progressBar.hide()
+                        progressBar.hide()
                         renderData(appState.msModel)
                     }
                     is AppState.Error -> {
-                        includeProgress.progressBar.hide()
-                        root.showErrorSnackBar(appState.error.message.toString())
+                        progressBar.hide()
+                        binding.root.showErrorSnackBar(appState.error.message.toString())
                     }
                 }
             }
@@ -38,7 +38,7 @@ class FragmentMsMqttSetup :
         if (viewModel.liveDataIsEditingMode.value == false) {
             (msModel as? MsModelSetup)?.let {
                 toLog("renderData $it")
-                binding.apply {
+                with(binding) {
                     switchMqttOnOff.isChecked = it.flagMQTT
                     (mqttAddressEditText as? TextView)?.text = it.mqtt_server
                     (mqttPortEditText as? TextView)?.text = it.mqtt_server_port.toString()
@@ -55,7 +55,7 @@ class FragmentMsMqttSetup :
     override fun sendData() {
         viewModel.createMsModelForSend()?.let { msSetupForSendModel ->
 
-            binding.apply {
+            with(binding) {
                 msSetupForSendModel.flagMQTT = switchMqttOnOff.isChecked
                 msSetupForSendModel.flagLog = switchLogOnOff.isChecked
 
@@ -89,7 +89,7 @@ class FragmentMsMqttSetup :
     }
 
     override fun viewInit() {
-        binding.apply {
+        with(binding) {
             buttonDeviceReset.setOnClickListener {
                 showDeviceResetDialogFragment()
             }
@@ -125,7 +125,7 @@ class FragmentMsMqttSetup :
     }
 
     override fun updateEnabledTextFields() {
-        binding.apply {
+        with(binding) {
             mqttAddressTextField.isEnabled = switchMqttOnOff.isChecked
             mqttPortTextField.isEnabled = switchMqttOnOff.isChecked
             mqttLoginTextField.isEnabled = switchMqttOnOff.isChecked

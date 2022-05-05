@@ -17,18 +17,18 @@ class FragmentMsWifiSetup :
 
     override fun subscribeLiveData() {
         viewModel.liveData.observe(viewLifecycleOwner) { appState ->
-            binding.apply {
+            with(binding.includeProgress) {
                 when (appState) {
-                    is AppState.Loading -> includeProgress.progressBar.show("Соединение...")
-                    is AppState.Restarting -> includeProgress.progressBar.show("Перезагрузка...")
-                    is AppState.Saving -> includeProgress.progressBar.show("Сохранение...")
+                    is AppState.Loading -> progressBar.show("Соединение...")
+                    is AppState.Restarting -> progressBar.show("Перезагрузка...")
+                    is AppState.Saving -> progressBar.show("Сохранение...")
                     is AppState.Success -> {
-                        includeProgress.progressBar.hide()
+                        progressBar.hide()
                         renderData(appState.msModel)
                     }
                     is AppState.Error -> {
-                        includeProgress.progressBar.hide()
-                        root.showErrorSnackBar(appState.error.message.toString())
+                        progressBar.hide()
+                        binding.root.showErrorSnackBar(appState.error.message.toString())
                     }
                 }
             }
@@ -39,7 +39,7 @@ class FragmentMsWifiSetup :
         if (viewModel.liveDataIsEditingMode.value == false) {
             (msModel as? MsModelSetup)?.let {
                 toLog("renderData $it")
-                binding.apply {
+                with(binding) {
                     wifiModeSwitch.isChecked = !it.wifiAP_mode
                     apModeSwitch.isChecked = it.wifiAP_mode
 
@@ -64,7 +64,7 @@ class FragmentMsWifiSetup :
     override fun sendData() {
         viewModel.createMsModelForSend()?.let { msSetupForSendModel ->
 
-            binding.apply {
+            with(binding) {
                 if (!apModeSwitch.isChecked) {
                     msSetupForSendModel.wifiAP_mode = apModeSwitch.isChecked
                     if (wifiSsidTextField.error == null && wifiPasswordTextField.error == null) {
@@ -112,7 +112,7 @@ class FragmentMsWifiSetup :
     }
 
     override fun viewInit() {
-        binding.apply {
+        with(binding) {
             buttonDeviceReset.setOnClickListener {
                 showDeviceResetDialogFragment()
             }
@@ -172,7 +172,7 @@ class FragmentMsWifiSetup :
     }
 
     override fun updateEnabledTextFields() {
-        binding.apply {
+        with(binding) {
             apSsidTextField.isEnabled = apModeSwitch.isChecked
             apPasswordTextField.isEnabled = apModeSwitch.isChecked
 

@@ -52,17 +52,19 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
 
     private fun subscribeLiveData() {
         viewModel.liveData.observe(viewLifecycleOwner) { appState ->
-            when (appState) {
-                is AppState.Loading -> binding.includeProgress.progressBar.show("Соединение...")
-                is AppState.Restarting -> binding.includeProgress.progressBar.show("Перезагрузка...")
-                is AppState.Saving -> binding.includeProgress.progressBar.show("Сохранение...")
-                is AppState.Success -> {
-                    binding.includeProgress.progressBar.hide()
-                    renderData(appState.msModel)
-                }
-                is AppState.Error -> {
-                    binding.includeProgress.progressBar.hide()
-                    binding.root.showErrorSnackBar(appState.error.message.toString())
+            with(binding.includeProgress) {
+                when (appState) {
+                    is AppState.Loading -> progressBar.show("Соединение...")
+                    is AppState.Restarting -> progressBar.show("Перезагрузка...")
+                    is AppState.Saving -> progressBar.show("Сохранение...")
+                    is AppState.Success -> {
+                        progressBar.hide()
+                        renderData(appState.msModel)
+                    }
+                    is AppState.Error -> {
+                        progressBar.hide()
+                        binding.root.showErrorSnackBar(appState.error.message.toString())
+                    }
                 }
             }
         }
@@ -117,12 +119,14 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
     }
 
     private fun viewInit() {
-            binding.ipAddress.text = deviceModel.ip
-            binding.delayTextInputLayout.isEndIconVisible = false
+        with(binding) {
+            ipAddress.text = deviceModel.ip
+            delayTextInputLayout.isEndIconVisible = false
+        }
     }
 
     private fun viewListenerInit() {
-        binding.apply {
+        with(binding) {
             lightOff.setOnClickListener { sendData() }
             lightOn.setOnClickListener { sendData() }
             lightAuto.setOnClickListener { sendData() }
@@ -138,7 +142,7 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
 
     private fun sendData() {
         viewModel.createMsModelForSend()?.let { msMainForSendModel ->
-            binding.apply {
+            with(binding) {
                 when {
                     lightOff.isChecked -> msMainForSendModel.relayMode = 0
                     lightOn.isChecked -> msMainForSendModel.relayMode = 1
@@ -196,10 +200,10 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
     }
 
     private fun lightState(lightState: LightState) {
-        binding.imageLight.apply {
-            setImageResource(lightState.drawable)
+        with(binding) {
+            imageLight.setImageResource(lightState.drawable)
             ImageViewCompat.setImageTintList(
-                this,
+                imageLight,
                 ColorStateList.valueOf(getColor(requireContext(), lightState.color))
             )
         }
