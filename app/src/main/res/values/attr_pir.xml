@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="PirView">
+        <attr name="pirDisableColor" format="color" />
+        <attr name="pirMonitoringColor" format="color" />
+        <attr name="pirAlarmColor" format="color" />
+
+        <attr name="scaleMinDisableState" format="float" />
+        <attr name="scaleMaxDisableState" format="float" />
+        <attr name="scaleMinMonitoringState" format="float" />
+        <attr name="scaleMaxMonitoringState" format="float" />
+        <attr name="scaleMinAlarmState" format="float" />
+        <attr name="scaleMaxAlarmState" format="float" />
+
+        <attr name="durationPulseDisableState" format="integer"/>
+        <attr name="durationPulseMonitoringState" format="integer"/>
+        <attr name="durationPulseAlarmState" format="integer" />
+
+        <attr name="pirState" format="integer">
+            <enum name="DISABLE" value="0" />
+            <enum name="MONITORING" value="1" />
+            <enum name="ALARM" value="2" />
+        </attr>
+    </declare-styleable>
+
+    <attr name="pirStyle" format="reference" />
+
+</resources>

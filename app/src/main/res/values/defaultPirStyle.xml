@@ -1,0 +1,17 @@
+<resources>
+
+    <style name="DefaultPirStyle">
+        <item name="pirDisableColor">?attr/colorOnBackground</item>
+        <item name="pirMonitoringColor">?attr/colorAccent</item>
+        <item name="pirAlarmColor">?attr/colorError</item>
+        <item name="scaleMinDisableState">0.5</item>
+        <item name="scaleMaxDisableState">0.5</item>
+        <item name="scaleMinMonitoringState">0.5</item>
+        <item name="scaleMaxMonitoringState">0.75</item>
+        <item name="scaleMinAlarmState">0.75</item>
+        <item name="scaleMaxAlarmState">1.0</item>
+        <item name="durationPulseDisableState">500</item>
+        <item name="durationPulseMonitoringState">1000</item>
+        <item name="durationPulseAlarmState">250</item>
+    </style>
+</resources>

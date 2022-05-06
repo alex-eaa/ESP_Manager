@@ -7,7 +7,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
@@ -26,6 +25,7 @@ import com.elchaninov.espmanager.model.ms.MsModelMain
 import com.elchaninov.espmanager.utils.hide
 import com.elchaninov.espmanager.utils.show
 import com.elchaninov.espmanager.utils.showErrorSnackBar
+import com.elchaninov.espmanager.view.PirState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -88,13 +88,13 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
             when (it.relay.sensor0Use) {
                 false -> {
                     binding.switchPir0.isChecked = false
-                    pirState(binding.imagePir0, PirState.DISABLE)
+                    binding.pir0.pirState = PirState.DISABLE
                 }
                 true -> {
                     binding.switchPir0.isChecked = true
                     when (it.sensor0State) {
-                        false -> pirState(binding.imagePir0, PirState.OFF)
-                        true -> pirState(binding.imagePir0, PirState.ON)
+                        false -> binding.pir0.pirState = PirState.MONITORING
+                        true -> binding.pir0.pirState = PirState.ALARM
                     }
                 }
             }
@@ -102,13 +102,13 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
             when (it.relay.sensor1Use) {
                 false -> {
                     binding.switchPir1.isChecked = false
-                    pirState(binding.imagePir1, PirState.DISABLE)
+                    binding.pir1.pirState = PirState.DISABLE
                 }
                 true -> {
                     binding.switchPir1.isChecked = true
                     when (it.sensor1State) {
-                        false -> pirState(binding.imagePir1, PirState.OFF)
-                        true -> pirState(binding.imagePir1, PirState.ON)
+                        false -> binding.pir1.pirState = PirState.MONITORING
+                        true -> binding.pir1.pirState = PirState.ALARM
                     }
                 }
             }
@@ -207,13 +207,6 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
                 ColorStateList.valueOf(getColor(requireContext(), lightState.color))
             )
         }
-    }
-
-    private fun pirState(pirImageView: ImageView, pirState: PirState) {
-        ImageViewCompat.setImageTintList(
-            pirImageView,
-            ColorStateList.valueOf(getColor(requireContext(), pirState.color))
-        )
     }
 
     override fun onStart() {

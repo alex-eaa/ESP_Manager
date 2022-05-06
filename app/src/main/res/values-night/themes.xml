@@ -12,5 +12,22 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
+        <item name="pirStyle">@style/MyPirStyle</item>
+    </style>
+
+    <style name="MyPirStyle">
+        <item name="pirDisableColor">@color/pirDisable</item>
+        <item name="pirMonitoringColor">@color/pirOff</item>
+        <item name="pirAlarmColor">@color/pirOn</item>
+        <item name="scaleMinDisableState">0.5</item>
+        <item name="scaleMaxDisableState">0.5</item>
+        <item name="scaleMinMonitoringState">0.7</item>
+        <item name="scaleMaxMonitoringState">0.9</item>
+        <item name="scaleMinAlarmState">0.7</item>
+        <item name="scaleMaxAlarmState">1.0</item>
+        <item name="durationPulseDisableState">400</item>
+        <item name="durationPulseMonitoringState">1500</item>
+        <item name="durationPulseAlarmState">150</item>
     </style>
 </resources>
