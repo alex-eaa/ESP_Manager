@@ -44,13 +44,19 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/image_light"
+                        <com.elchaninov.espmanager.view.LampView
+                            android:id="@+id/image_lamp_view"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2"
-                            android:src="@drawable/light_off"
-                            app:tint="@color/gray" />
+                            app:durationOnOffLamp="500"
+                            app:durationPulseRays="700"
+                            app:lampOffColor="@color/lightOff"
+                            app:lampOnColor="@color/lightOn"
+                            app:lampState="false"
+                            app:raysColor="@color/lightOn"
+                            app:scaleMaxRays="1.1"
+                            app:scaleMinRays="0.9" />
 
                         <Space
                             android:layout_width="0dp"

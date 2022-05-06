@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="LampView">
+        <attr name="lampOffColor" format="color" />
+        <attr name="lampOnColor" format="color" />
+        <attr name="raysColor" format="color" />
+
+        <attr name="scaleMinRays" format="float" />
+        <attr name="scaleMaxRays" format="float" />
+
+        <attr name="durationOnOffLamp" format="integer"/>
+        <attr name="durationPulseRays" format="integer"/>
+
+        <attr name="lampState" format="boolean"/>
+    </declare-styleable>
+
+    <attr name="defaultLampStyle" format="reference" />
+
+</resources>

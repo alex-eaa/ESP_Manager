@@ -1,6 +1,5 @@
 package com.elchaninov.espmanager.view.ms
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -8,9 +7,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
-import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
-import androidx.core.widget.ImageViewCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -74,10 +71,8 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
         (msModel as? MsModelMain)?.let {
             toLog("renderData $it")
 
-            when (it.relay.relayState) {
-                true -> lightState(LightState.ON)
-                false -> lightState(LightState.OFF)
-            }
+                binding.imageLampView.lampState = it.relay.relayState
+                binding.imageLampView.lampState = it.relay.relayState
 
             when (it.relay.relayMode) {
                 0 -> binding.lightOff.isChecked = true
@@ -197,16 +192,6 @@ class FragmentMsMain : Fragment(R.layout.fragment_ms_main) {
                 }
             }
         )
-    }
-
-    private fun lightState(lightState: LightState) {
-        with(binding) {
-            imageLight.setImageResource(lightState.drawable)
-            ImageViewCompat.setImageTintList(
-                imageLight,
-                ColorStateList.valueOf(getColor(requireContext(), lightState.color))
-            )
-        }
     }
 
     override fun onStart() {
