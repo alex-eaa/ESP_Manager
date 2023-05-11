@@ -4,7 +4,11 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.elchaninov.espmanager.model.AppState
 import com.elchaninov.espmanager.model.DeviceModel
-import com.elchaninov.espmanager.model.ms.*
+import com.elchaninov.espmanager.model.ms.MsForSendModel
+import com.elchaninov.espmanager.model.ms.MsForSendModelMain
+import com.elchaninov.espmanager.model.ms.MsModel
+import com.elchaninov.espmanager.model.ms.MsModelMain
+import com.elchaninov.espmanager.model.ms.toMsModelForSend
 import com.elchaninov.espmanager.model.repo.webSocket.WebSocketFlowRepo
 import com.elchaninov.espmanager.model.repo.webSocket.WebSocketFlowRepoImpl
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +33,7 @@ open class ViewModelFragmentMsMain(
         if (job == null) {
             myWebSocketRepo?.let { myWebSocketRepo ->
                 toLog("startFlow() Flow started")
-                job = viewModelScope.launch(handler) {
+                job = viewModelScope.launch(Dispatchers.IO + handler) {
                     myWebSocketRepo.getFlow()
                         .onStart { _liveData.postValue(AppState.Loading) }
                         .collect { _liveData.postValue(AppState.Success(deserializationJson(it))) }
